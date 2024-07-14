@@ -1,0 +1,52 @@
+﻿@model RaWMVC.ViewModels.TagViewModel
+
+@{
+    ViewData["Title"] = "Tag Management";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var isCreate = Model == null || Model.tagId == Guid.Empty;
+    var actionString = isCreate ? "Create" : "Edit";
+    var buttonString = isCreate ? "Create" : "Edit";
+}
+
+<h1>Create Music</h1>
+
+<hr />
+<form asp-action="@actionString" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="tagId" class="form-control" />
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <label asp-for="tagName" class="control-label"></label>
+                    <fieldset class="form-group">
+                        <input asp-for="tagName" class="form-control" />
+                    </fieldset>
+                    <span asp-validation-for="tagName" class="text-danger"></span>
+                </div>
+
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <label asp-for="tagDescription" class="control-label"></label>
+                    <fieldset class="form-group">
+                        <textarea asp-for="tagDescription" rows="3" class="form-control"></textarea>
+                    </fieldset>
+                    <span asp-validation-for="tagDescription" class="text-danger"></span>
+                </div>
+
+            </div>
+
+            <div class="form-group" style="text-align: center;">
+                <input type="submit" value="@buttonString" class="btn btn-primary" />
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div id="music-list">
+                @await Component.InvokeAsync("TagList")
+            </div>
+        </div>
+    </div>
+</form>

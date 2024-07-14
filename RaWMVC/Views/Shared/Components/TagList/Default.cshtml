@@ -1,0 +1,32 @@
+﻿@model List<RaWMVC.Data.Entities.Tag>
+
+<table>
+	<tr>
+		<th width="10%">No. </th>
+		<th width="30%">Name</th>
+		<th width="40%">Description</th>
+		<th width="20%">Action</th>
+	</tr>
+
+	@if (Model != null)
+	{
+		foreach (var tag in Model)
+		{
+			<tr>
+				<td>@tag.Position</td>
+				<td>@tag.tagName</td>
+				<td>@tag.tagDescription</td>
+				<td>
+					<a href="~/Tag/Edit/?idTag=@tag.tagId">Update</a>
+				</td>
+			</tr>
+		}
+	}
+	else
+	{
+		<tr>
+			<td colspan="3">Empty data</td>
+		</tr>
+	}
+
+</table>
