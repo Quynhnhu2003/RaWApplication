@@ -1,12 +1,21 @@
 ﻿<ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
     <li class="active">
-        <a href="index.html"><i class="mbri-paper-plane"></i><span class="menu-title" data-i18n="Travel">Travel</span></a>
+        <a asp-controller="Tag" asp-action="Index">
+            <i class="mbri-paper-plane"></i>
+            <span class="menu-title" data-i18n="Travel">Tag</span>
+        </a>
     </li>
     <li class=" nav-item">
-        <a href="travel-list.html"><i class="mbri-bulleted-list"></i><span class="menu-title" data-i18n="Travel List">Travel List</span></a>
+        <a asp-controller="Status" asp-action="Index">
+            <i class="mbri-bulleted-list"></i>
+            <span class="menu-title" data-i18n="Travel List">Status</span>
+        </a>
     </li>
     <li class=" nav-item">
-        <a href="travel-detail.html"><i class="mbri-database"></i><span class="menu-title" data-i18n="Travel Detail">Travel Detail</span></a>
+        <a asp-controller="Genre" asp-action="Index">
+            <i class="mbri-database"></i>
+            <span class="menu-title" data-i18n="Travel Detail">Genre</span>
+        </a>
     </li>
     <li class=" nav-item">
         <a href="travel-booking.html"><i class="mbri-bootstrap"></i><span class="menu-title" data-i18n="Travel Booking">Travel Booking</span></a>

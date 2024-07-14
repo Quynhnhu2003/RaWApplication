@@ -1,0 +1,31 @@
+﻿@model List<RaWMVC.Data.Entities.Status>
+
+<table>
+<tr>
+	<th width="10%">No.</th>
+	<th width="20%">Name</th>
+	<th width="40%">Description</th>
+	<th width="30%">Action</th>
+</tr>
+
+@if (Model != null)
+{
+	foreach (var status in Model)
+	{
+		<tr>
+			<td>@status.Position</td>
+			<td>@status.statusName</td>
+			<td>@status.statusDescription</td>
+			<td>
+				<a href="~/Status/Edit/?idStatus=@status.statusId">Update</a>
+			</td>
+		</tr>
+	}
+}
+else
+{
+	<tr>
+		<td colspan="3">Empty data</td>
+	</tr>
+}
+</table>

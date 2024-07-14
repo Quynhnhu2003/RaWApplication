@@ -1,4 +1,4 @@
-using RaW.MVC.Data;
+using RaWMVC.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

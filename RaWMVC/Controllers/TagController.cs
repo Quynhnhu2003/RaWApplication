@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.EntityFrameworkCore;
-using RaW.MVC.Data;
+using RaWMVC.Data;
 using RaWMVC.Data.Entities;
 using RaWMVC.ViewModels;
 
@@ -16,6 +16,7 @@ namespace RaWMVC.Controllers
         }
         public IActionResult Index()
         {
+            TempData.Keep();
             return View();
         }
         // POST: TagController/Create
@@ -59,6 +60,7 @@ namespace RaWMVC.Controllers
                 .Where(t => t.tagId.Equals(idTag))
                 .Select(t => new TagViewModel
                 {
+                    tagId = t.tagId,
                     tagName = t.tagName,
                     tagDescription = t.tagDescription.Trim(),
                 })
@@ -72,7 +74,7 @@ namespace RaWMVC.Controllers
         // POST: TagController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(TagViewModel tagVM)
+        public async Task<IActionResult> Edit(Tag tagVM)
         {
             try
             {

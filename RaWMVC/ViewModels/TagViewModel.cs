@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RaW.MVC.Commons;
+using RaWMVC.Commons;
 using System.ComponentModel.DataAnnotations;
 
 namespace RaWMVC.ViewModels

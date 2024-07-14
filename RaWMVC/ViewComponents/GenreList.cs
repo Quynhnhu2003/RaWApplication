@@ -5,25 +5,23 @@ using RaWMVC.Data.Entities;
 
 namespace RaWMVC.ViewComponents
 {
-    public class TagList : ViewComponent
+    public class GenreList : ViewComponent
     {
         private readonly RaWDbContext _context;
-        public TagList(RaWDbContext context)
+        public GenreList(RaWDbContext context)
         {
             _context = context;
         }
-
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var item = await GetItemsAsync();
+            var item = await GetItemAsync();
 
             return View(item);
         }
-
-        private Task<List<Tag>> GetItemsAsync()
+        private Task<List<Genre>> GetItemAsync()
         {
-            return _context.Tags
-                .OrderBy(t => t.Position)
+            return _context.Genres
+                .OrderBy(g => g.Position)
                 .ToListAsync();
         }
     }

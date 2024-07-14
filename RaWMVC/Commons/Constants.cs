@@ -1,4 +1,4 @@
-﻿namespace RaW.MVC.Commons
+﻿namespace RaWMVC.Commons
 {
     public class Constants
     {

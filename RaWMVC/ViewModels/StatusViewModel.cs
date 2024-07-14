@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RaW.MVC.Commons;
+using RaWMVC.Commons;
 using System.ComponentModel.DataAnnotations;
 
 namespace RaWMVC.ViewModels
@@ -9,7 +9,7 @@ namespace RaWMVC.ViewModels
     {
         public Guid statusId { get; set; }
         [MaxLength(Constants.MAXLENGTH_EntitiesName)]
-        public string statusName { get; set; }
+        public string? statusName { get; set; }
         [MaxLength(Constants.MAXLENGTH_EntitiesDescription)]
         public string? statusDescription { get; set; }
         public int Position { get; set; }

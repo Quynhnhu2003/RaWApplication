@@ -1,28 +1,27 @@
-﻿@model RaWMVC.ViewModels.TagViewModel
+﻿@model RaWMVC.ViewModels.GenreViewModel
 
 @{
-    ViewData["Title"] = "Tag Management";
+    ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
-    var isCreate = Model == null || Model.tagId == Guid.Empty;
+    var isCreate = Model == null || Model.genreId == Guid.Empty;
     var actionString = isCreate ? "Create" : "Edit";
     var buttonString = isCreate ? "Create" : "Edit";
 }
 
-<h1>Tag Management</h1>
-<span class="text-danger">Chưa lấy dữ liệu để EDIT được</span>
+<h1>Genre Management</h1>
 <hr />
 <form asp-action="@actionString" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="tagId" class="form-control" />
+    <input type="hidden" asp-for="genreId" class="form-control" />
     <div class="row">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
                     <label class="control-label">Name</label>
                     <fieldset class="form-group">
-                        <input asp-for="tagName" class="form-control" />
+                        <input asp-for="genreName" class="form-control" />
                     </fieldset>
-                    <span asp-validation-for="tagName" class="text-danger"></span>
+                    <span asp-validation-for="genreName" class="text-danger"></span>
                 </div>
 
             </div>
@@ -31,9 +30,9 @@
                 <div class="card-body">
                     <label class="control-label">Description</label>
                     <fieldset class="form-group">
-                        <textarea asp-for="tagDescription" rows="3" class="form-control"></textarea>
+                        <textarea asp-for="genreDescription" rows="3" class="form-control"></textarea>
                     </fieldset>
-                    <span asp-validation-for="tagDescription" class="text-danger"></span>
+                    <span asp-validation-for="genreDescription" class="text-danger"></span>
                 </div>
 
             </div>
@@ -44,7 +43,7 @@
         </div>
         <div class="col-md-6">
             <div id="music-list">
-                @await Component.InvokeAsync("TagList")
+                @await Component.InvokeAsync("GenreList")
             </div>
         </div>
     </div>

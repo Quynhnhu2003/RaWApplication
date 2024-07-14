@@ -3,7 +3,7 @@ using RaW.MVC.Data.Configurations;
 using RaWMVC.Data.Configurations;
 using RaWMVC.Data.Entities;
 
-namespace RaW.MVC.Data
+namespace RaWMVC.Data
 {
     public class RaWDbContext : DbContext
     {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using RaW.MVC.Commons;
+using RaWMVC.Commons;
 using RaWMVC.Data.Entities;
 
 namespace RaW.MVC.Data.Configurations

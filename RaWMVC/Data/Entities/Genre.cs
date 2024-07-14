@@ -8,7 +8,7 @@
         }
         public Guid genreId { get; set; }
         public string genreName { get; set; }
-        public string genreDescription { get; set; }
+        public string? genreDescription { get; set; }
         public int Position { get; set; }
     }
 }

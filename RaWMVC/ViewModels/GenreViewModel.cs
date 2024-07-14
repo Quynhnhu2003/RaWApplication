@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RaW.MVC.Commons;
+using RaWMVC.Commons;
 using System.ComponentModel.DataAnnotations;
 
 namespace RaWMVC.ViewModels
@@ -11,8 +11,7 @@ namespace RaWMVC.ViewModels
         [MaxLength(Constants.MAXLENGTH_EntitiesName)]
         public string genreName { get; set; }
         [MaxLength(Constants.MAXLENGTH_EntitiesDescription)]
-        public string genreDescription { get; set; }
+        public string? genreDescription { get; set; }
         public int Position { get; set; }
-
     }
 }

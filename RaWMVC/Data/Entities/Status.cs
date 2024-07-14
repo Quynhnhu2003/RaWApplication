@@ -8,7 +8,7 @@
         }
         public Guid statusId { get; set; }
         public string statusName { get; set; }
-        public string statusDescription { get; set; }
+        public string? statusDescription { get; set; }
         public int Position { get; set; }
     }
 }
