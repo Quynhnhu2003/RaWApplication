@@ -1,32 +1,49 @@
 ﻿@model List<RaWMVC.Data.Entities.Tag>
 
-<table>
-	<tr>
-		<th width="10%">No. </th>
-		<th width="30%">Name</th>
-		<th width="40%">Description</th>
-		<th width="20%">Action</th>
-	</tr>
-
-	@if (Model != null)
-	{
-		foreach (var tag in Model)
-		{
-			<tr>
-				<td>@tag.Position</td>
-				<td>@tag.tagName</td>
-				<td>@tag.tagDescription</td>
-				<td>
-					<a href="~/Tag/Edit/?idTag=@tag.tagId">Update</a>
-				</td>
-			</tr>
-		}
-	}
-	else
-	{
-		<tr>
-			<td colspan="3">Empty data</td>
-		</tr>
-	}
-
-</table>
+<div class="row">
+	<div class="col-12">
+		<div class="card">
+			<div class="card-content collapse show">
+				<div class="table-responsive">
+					<table class="table">
+						<thead class="thead-dark">
+							<tr>
+								<th scope="col">#</th>
+								<th scope="col">Name</th>
+								<th scope="col">Description</th>
+								<th scope="col">Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							@if (Model != null)
+							{
+								foreach (var tag in Model)
+								{
+									<tr>
+										<th scope="row">@tag.Position</th>
+										<td>@tag.tagName</td>
+										<td>@tag.tagDescription</td>
+										<td>
+											<a class="fs-4" href="~/Tag/Edit/?idTag=@tag.tagId">
+												<i class="fa-solid fa-file-pen"></i>
+											</a>
+											@* <a class="fs-4" href="~/Tag/Delete/?idTag=@tag.tagId">
+									<i class="fa-solid fa-eraser"></i>
+									</a> *@
+										</td>
+									</tr>
+								}
+							}
+							else
+							{
+								<tr>
+									<td colspan="3">Empty data</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,7 +1,7 @@
 ﻿@model RaWMVC.ViewModels.TagViewModel
 
 @{
-    ViewData["Title"] = "Tag Management";
+    ViewData["Title"] = "Status Management";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
     var isCreate = Model == null || Model.tagId == Guid.Empty;
     var actionString = isCreate ? "Create" : "Edit";

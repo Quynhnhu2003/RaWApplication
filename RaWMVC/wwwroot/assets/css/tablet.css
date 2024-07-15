@@ -1,0 +1,15 @@
+@media (min-width: 600px) and (max-width: 900px) {
+  .story_left {
+    display: none;
+  }
+  .stoyr_item {
+    margin-left: 0;
+    margin-top: 5%;
+  }
+  .story_item_description {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}

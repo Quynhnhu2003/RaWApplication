@@ -1,31 +1,49 @@
 ﻿@model List<RaWMVC.Data.Entities.Genre>
 
-<table>
-	<tr>
-		<th width="10%">No.</th>
-		<th width="20%">Name</th>
-		<th width="40%">Description</th>
-		<th width="30%">Action</th>
-	</tr>
-
-	@if (Model != null)
-	{
-		foreach (var genre in Model)
-		{
-			<tr>
-				<td>@genre.Position</td>
-				<td>@genre.genreName</td>
-				<td>@genre.genreDescription</td>
-				<td>
-					<a href="~/Genre/Edit/?idGenre=@genre.genreId">Update</a>
-				</td>
-			</tr>
-		}
-	}
-	else
-	{
-		<tr>
-			<td colspan="3">Empty data</td>
-		</tr>
-	}
-</table>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-content collapse show">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+							@if (Model != null)
+							{
+								foreach (var genre in Model)
+								{
+									<tr>
+										<th scope="row">@genre.Position</th>
+										<td>@genre.genreName</td>
+										<td>@genre.genreDescription</td>
+										<td>
+											<a class="fs-4" href="~/Genre/Edit/?idGenre=@genre.genreId">
+												<i class="fa-solid fa-file-pen"></i>
+											</a>
+											@* <a class="fs-4" href="~/Genre/Edit/?idGenre=@genre.genreId">
+												<i class="fa-solid fa-eraser"></i>
+											</a> *@
+										</td>
+									</tr>
+								}
+							}
+							else
+							{
+								<tr>
+									<td colspan="3">Empty data</td>
+								</tr>
+							}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
