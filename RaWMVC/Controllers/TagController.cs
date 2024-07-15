@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using RaWMVC.Data;
 using RaWMVC.Data.Entities;
+using RaWMVC.ViewComponents;
 using RaWMVC.ViewModels;
 
 namespace RaWMVC.Controllers
@@ -109,18 +110,49 @@ namespace RaWMVC.Controllers
         }
 
         // POST: ArtistController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<ActionResult> Delete(Guid idTag)
+        //{
+        //    var status = false;
+        //    var message = "Not yet implemented!!!";
+        //    try
+        //    {
+        //        //=== Predicate/delgate ===//
+        //        var tag = await _context.Tags
+        //            .Where(t => t.tagId.Equals(idTag))
+        //            .SingleOrDefaultAsync();
+
+        //        if(tag != null)
+        //        {
+        //            //=== Decreasement Position ===//
+        //            var currentPosition = tag.Position;
+        //            var listTag= await _context.Tags
+        //                .Where(x => x.Position > currentPosition)
+        //                .ToListAsync();
+        //            if (listTag != null && listTag.Count > 0)
+        //            {
+        //                foreach (var item in listTag)
+        //                {
+        //                    item.Position -= 1;
+        //                }
+        //            }
+        //            //=== Remove Music ====//
+        //            _context.Tags.Remove(tag);
+        //        }
+        //        await _context.SaveChangesAsync();
+        //        status = true;
+        //    }
+        //    catch
+        //    {
+        //        message = "Execution error!!!";
+        //    }
+        //    return Json(new { status, message });
+        //}
+        //public IActionResult ReloadTagList()
+        //{
+
+        //    return ViewComponent(nameof(TagList));
+        //}
     }
 }

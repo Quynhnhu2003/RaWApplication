@@ -9,9 +9,9 @@
 
 $(window).on("load", function(){
 
-    var new_orders = new PerfectScrollbar('#recent-orders',{
-        wheelPropagation: true
-    });
+    //var new_orders = new PerfectScrollbar('#recent-orders',{
+    //    wheelPropagation: true
+    //});
     
     /********************************************
     *               Monthly Sales               *

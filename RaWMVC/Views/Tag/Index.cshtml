@@ -43,9 +43,52 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div id="music-list">
+            <div id="tag-list">
                 @await Component.InvokeAsync("TagList")
             </div>
         </div>
     </div>
 </form>
+
+@* @section Scripts {
+    <script>
+        function deleteTag(idTag) {
+            $.ajax({
+                type: 'POST',
+                url: "/Tag/Delete",
+                data: {
+                    idTag
+                },
+                success: function(data) {
+                    if (data.status) {
+                        ReloadMusicList();
+                    }
+                },
+                error: function(err) {
+
+                },
+                complete: function(e) {
+
+                },
+            });
+        }
+        function ReloadTagList() {
+            $.ajax({
+                type: 'POST',
+                url: "/Music/ReloadTagList",
+                success: function (data) {
+                    let divTagList = document.getElementById("tag-list");
+                    if (divTagList) {
+                        divTagList.innerHTML = data;
+                    }
+                },
+                error: function (err) {
+
+                },
+                complete: function (e) {
+
+                },
+            });
+        }
+    </script>
+} *@

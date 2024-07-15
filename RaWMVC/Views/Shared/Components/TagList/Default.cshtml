@@ -27,9 +27,9 @@
 											<a class="fs-4" href="~/Tag/Edit/?idTag=@tag.tagId">
 												<i class="fa-solid fa-file-pen"></i>
 											</a>
-											@* <a class="fs-4" href="~/Tag/Delete/?idTag=@tag.tagId">
-									<i class="fa-solid fa-eraser"></i>
-									</a> *@
+											<button class="btn btn-outline-primary" type="button" onclick="deleteTag('@tag.tagId')">
+												<i class="fa-solid fa-eraser"></i>
+											</button>
 										</td>
 									</tr>
 								}
