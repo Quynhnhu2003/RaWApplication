@@ -1,29 +1,39 @@
 ﻿<ul class="navigation navigation-main" id="main-menu-navigation" data-menu="menu-navigation">
-    <li class="active">
+    <li>
         <a asp-controller="Tag" asp-action="Index">
-            <i class="mbri-paper-plane"></i>
+            <i class="fa-solid fa-tags"></i>
             <span class="menu-title" data-i18n="Travel">Tag</span>
         </a>
     </li>
     <li class=" nav-item">
         <a asp-controller="Status" asp-action="Index">
-            <i class="mbri-bulleted-list"></i>
+            <i class="fa-solid fa-signal"></i>
             <span class="menu-title" data-i18n="Travel List">Status</span>
         </a>
     </li>
     <li class=" nav-item">
         <a asp-controller="Genre" asp-action="Index">
-            <i class="mbri-database"></i>
+            <i class="fa-solid fa-layer-group"></i>
             <span class="menu-title" data-i18n="Travel Detail">Genre</span>
         </a>
     </li>
     <li class=" nav-item">
-        <a href="travel-booking.html"><i class="mbri-bootstrap"></i><span class="menu-title" data-i18n="Travel Booking">Travel Booking</span></a>
+        <a href="travel-booking.html">
+            <i class="fa-regular fa-address-card"></i>
+            <span class="menu-title" data-i18n="Travel Booking">
+                Account
+            </span>
+        </a>
     </li>
     <li class=" nav-item">
-        <a href="travel-payment.html"><i class="mbri-cash"></i><span class="menu-title" data-i18n="Payment Details">Payment Details</span></a>
+        <a href="travel-payment.html">
+            <i class="fa-solid fa-people-line"></i>
+            <span class="menu-title" data-i18n="Payment Details">
+                Role
+            </span>
+        </a>
     </li>
-    <li class=" nav-item">
+@*     <li class=" nav-item">
         <a href="travel-complete-order.html"><i class="mbri-success"></i><span class="menu-title" data-i18n="Complete Booking">Complete Booking</span></a>
     </li>
     <li class=" nav-item">
@@ -248,5 +258,5 @@
                 </ul>
             </li>
         </ul>
-    </li>
+    </li> *@
 </ul>

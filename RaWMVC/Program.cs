@@ -1,4 +1,4 @@
-using RaWMVC.Data;
+﻿using RaWMVC.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RaWMVC.Areas.Identity.Data;
@@ -13,7 +13,43 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<RaWDbContext>();
 builder.Services.AddDbContext<RaWIdentityContext>();
 
-builder.Services.AddDefaultIdentity<RaWMVCUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<RaWIdentityContext>();
+builder.Services.AddDefaultIdentity<RaWMVCUser>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<RaWIdentityContext>();
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    //=== Password settings. ===//
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 8;
+    // số lượng ký tự đặc biệt
+    options.Password.RequiredUniqueChars = 1;
+
+    //=== Lockout settings.===//
+    options.Lockout.MaxFailedAccessAttempts = 5; //số lượng đăng nhập thất bại
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.AllowedForNewUsers = true;
+
+    //=== User settings. ===//
+    options.User.AllowedUserNameCharacters =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+    options.User.RequireUniqueEmail = true; //được sử dụng email làm tên đăng nhập
+});
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    //=== Cookie settings ===//
+    options.Cookie.HttpOnly = true;
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+    options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    options.SlidingExpiration = true;
+});
+
 
 var app = builder.Build();
 
@@ -31,6 +67,9 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+app.UseAuthentication();
+
+app.MapRazorPages();
 
 app.MapControllerRoute(
     name: "default",

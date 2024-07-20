@@ -8,7 +8,7 @@
     var buttonString = isCreate ? "Create" : "Edit";
 }
 
-<h1>Status Management</h1>
+<h1 class="text-center">Status Management</h1>
 <hr />
 <form asp-action="@actionString" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -42,9 +42,52 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div id="music-list">
+            <div id="status-list">
                 @await Component.InvokeAsync("StatusList")
             </div>
         </div>
     </div>
 </form>
+
+@section Scripts {
+    <script>
+        function deleteStatus(idStatus) {
+            $.ajax({
+                type: 'POST',
+                url: "/Status/Delete",
+                data: {
+                    idStatus
+                },
+                success: function (data) {
+                    if (data.status) {
+                        ReloadStatusList();
+                    }
+                },
+                error: function (err) {
+
+                },
+                complete: function (e) {
+
+                },
+            });
+        }
+        function ReloadStatusList() {
+            $.ajax({
+                type: 'POST',
+                url: "/Status/ReloadStatusList",
+                success: function (data) {
+                    let divStatusList = document.getElementById("status-list");
+                    if (divStatusList) {
+                        divStatusList.innerHTML = data;
+                    }
+                },
+                error: function (err) {
+
+                },
+                complete: function (e) {
+
+                },
+            });
+        }
+    </script>
+}

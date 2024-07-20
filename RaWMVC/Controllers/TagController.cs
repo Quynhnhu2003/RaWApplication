@@ -42,7 +42,7 @@ namespace RaWMVC.Controllers
                 TempData["Message"] = "Tag added successfully.";
 
                 //=== Return to continue creating ===//
-                return View(nameof(Index), tagVM);
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
@@ -50,109 +50,103 @@ namespace RaWMVC.Controllers
                 TempData["Message"] = "Failed to add tag.";
 
                 //=== If not successful, check the data again ===//
-                return View(nameof(Index), tagVM);
+                return View(nameof(Index));
             }
         }
 
-        // GET: TagController/Edit/5
-        public async Task<IActionResult> Edit(Guid idTag)
-        {
-            var tagVm = await _context.Tags
-                .Where(t => t.tagId.Equals(idTag))
-                .Select(t => new TagViewModel
-                {
-                    tagId = t.tagId,
-                    tagName = t.tagName,
-                    tagDescription = t.tagDescription.Trim(),
-                })
-                .SingleOrDefaultAsync();
+		// GET: TagController/Edit/5
+		public async Task<IActionResult> Edit(Guid idTag)
+		{
+			var tagVM = await _context.Tags
+				.Where(s => s.tagId.Equals(idTag))
+				.Select(a => new TagViewModel
+				{
+					tagId = a.tagId,
+					tagName = a.tagName,
+					tagDescription = a.tagDescription,
+				})
+				.SingleOrDefaultAsync();
 
-            if (tagVm == null) return BadRequest();
+			if (tagVM == null) return BadRequest();
 
-            return View(nameof(Index));
-        }
+			return View(nameof(Index), tagVM);
+		}
 
-        // POST: TagController/Edit/5
-        [HttpPost]
+		// POST: TagController/Edit/5
+		[HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Tag tagVM)
-        {
-            try
-            {
-                var tag = await _context.Tags.FindAsync(tagVM.tagId);
-                if (tag == null) return BadRequest();
+		public async Task<IActionResult> Edit(Tag tagVM)
+		{
+			try
+			{
+				var tag = await _context.Tags.FindAsync(tagVM.tagId);
+				if (tag == null) return BadRequest();
 
-                tag.tagName = tagVM.tagName.Trim();
-                tag.tagDescription = tagVM.tagDescription?.Trim();
+				tag.tagName = tagVM.tagName.Trim();
+				tag.tagDescription = tagVM.tagDescription?.Trim();
 
-                //=== The tag has just been edited to the database ===//
-                await _context.SaveChangesAsync();
+				await _context.SaveChangesAsync();
 
-                //=== Display successfully saved message ===//
-                TempData["Message"] = "Tag edited successfully.";
+				TempData["Message"] = "Edited tag successfully.";
 
-                return View(nameof(Index), tagVM);
-            }
-            catch 
-            {
-                //=== Display faily saved message ===//
-                TempData["Message"] = "Failed to edit tag.";
+				return RedirectToAction(nameof(Index));
+			}
+			catch
+			{
+				TempData["Message"] = "Failed to edit tag";
 
-                //=== If not successful, check the data again ===//
-                return View(nameof(Index), tagVM);
-            }
-        }
+				return View(nameof(Index), tagVM);
+			}
+		}
 
-        // GET: ArtistController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
+		public IActionResult GetData(int page = 1) 
+        { 
+            return ViewComponent("TagList", page); 
         }
 
         // POST: ArtistController/Delete/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> Delete(Guid idTag)
-        //{
-        //    var status = false;
-        //    var message = "Not yet implemented!!!";
-        //    try
-        //    {
-        //        //=== Predicate/delgate ===//
-        //        var tag = await _context.Tags
-        //            .Where(t => t.tagId.Equals(idTag))
-        //            .SingleOrDefaultAsync();
+        [HttpPost]
+        public async Task<ActionResult> Delete(Guid idTag)
+        {
+            var status = false;
+            var message = "Not yet implemented!!!";
+            try
+            {
+                //=== Predicate/delgate ===//
+                var tag = await _context.Tags
+                    .Where(t => t.tagId.Equals(idTag))
+                    .SingleOrDefaultAsync();
 
-        //        if(tag != null)
-        //        {
-        //            //=== Decreasement Position ===//
-        //            var currentPosition = tag.Position;
-        //            var listTag= await _context.Tags
-        //                .Where(x => x.Position > currentPosition)
-        //                .ToListAsync();
-        //            if (listTag != null && listTag.Count > 0)
-        //            {
-        //                foreach (var item in listTag)
-        //                {
-        //                    item.Position -= 1;
-        //                }
-        //            }
-        //            //=== Remove Music ====//
-        //            _context.Tags.Remove(tag);
-        //        }
-        //        await _context.SaveChangesAsync();
-        //        status = true;
-        //    }
-        //    catch
-        //    {
-        //        message = "Execution error!!!";
-        //    }
-        //    return Json(new { status, message });
-        //}
-        //public IActionResult ReloadTagList()
-        //{
+                if (tag != null)
+                {
+                    //=== Decreasement Position ===//
+                    var currentPosition = tag.Position;
+                    var listTag = await _context.Tags
+                        .Where(x => x.Position > currentPosition)
+                        .ToListAsync();
+                    if (listTag != null && listTag.Count > 0)
+                    {
+                        foreach (var item in listTag)
+                        {
+                            item.Position -= 1;
+                        }
+                    }
+                    //=== Remove Tag ====//
+                    _context.Tags.Remove(tag);
+                }
+                await _context.SaveChangesAsync();
+                status = true;
+            }
+            catch
+            {
+                message = "Execution error!!!";
+            }
+            return Json(new { status, message });
+        }
+        public IActionResult ReloadTagList()
+        {
 
-        //    return ViewComponent(nameof(TagList));
-        //}
+            return ViewComponent(nameof(TagList));
+        }
     }
 }

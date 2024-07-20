@@ -8,8 +8,7 @@
     var buttonString = isCreate ? "Create" : "Edit";
 }
 
-<h1>Tag Management</h1>
-<span class="text-danger">Chưa lấy dữ liệu để EDIT được</span>
+<h1 class="text-center">Tag Management</h1>
 <hr />
 <form asp-action="@actionString" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -50,19 +49,19 @@
     </div>
 </form>
 
-@* @section Scripts {
+@section Scripts {
     <script>
-        function deleteTag(idTag) {
+        function getData(page) {
+            console.log("This is page: ", page)
             $.ajax({
-                type: 'POST',
-                url: "/Tag/Delete",
+                type: 'GET',
+                url: "/Tag/GetData",
                 data: {
-                    idTag
+                    page
                 },
                 success: function(data) {
-                    if (data.status) {
-                        ReloadMusicList();
-                    }
+                    var divTagList = document.getElementById("tag-list");
+                    divTagList.innerHTML = data;
                 },
                 error: function(err) {
 
@@ -70,12 +69,33 @@
                 complete: function(e) {
 
                 },
+            })
+        }
+
+        function deleteTag(idTag) {
+            $.ajax({
+                type: 'POST',
+                url: "/Tag/Delete",
+                data: {
+                    idTag
+                },
+                success: function (data) {
+                    if (data.status) {
+                        ReloadTagList();
+                    }
+                },
+                error: function (err) {
+
+                },
+                complete: function (e) {
+
+                },
             });
         }
         function ReloadTagList() {
             $.ajax({
                 type: 'POST',
-                url: "/Music/ReloadTagList",
+                url: "/Tag/ReloadTagList",
                 success: function (data) {
                     let divTagList = document.getElementById("tag-list");
                     if (divTagList) {
@@ -91,4 +111,4 @@
             });
         }
     </script>
-} *@
+}

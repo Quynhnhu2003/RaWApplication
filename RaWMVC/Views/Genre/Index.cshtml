@@ -8,7 +8,7 @@
     var buttonString = isCreate ? "Create" : "Edit";
 }
 
-<h1>Genre Management</h1>
+<h1 class="text-center">Genre Management</h1>
 <hr />
 <form asp-action="@actionString" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -42,9 +42,52 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div id="music-list">
+            <div id="genre-list">
                 @await Component.InvokeAsync("GenreList")
             </div>
         </div>
     </div>
 </form>
+
+@section Scripts {
+    <script>
+        function deleteGenre(idGenre) {
+            $.ajax({
+                type: 'POST',
+                url: "/Genre/Delete",
+                data: {
+                    idGenre
+                },
+                success: function (data) {
+                    if (data.status) {
+                        ReloadGenreList();
+                    }
+                },
+                error: function (err) {
+
+                },
+                complete: function (e) {
+
+                },
+            });
+        }
+        function ReloadGenreList() {
+            $.ajax({
+                type: 'POST',
+                url: "/Genre/ReloadGenreList",
+                success: function (data) {
+                    let divGenreList = document.getElementById("genre-list");
+                    if (divGenreList) {
+                        divGenreList.innerHTML = data;
+                    }
+                },
+                error: function (err) {
+
+                },
+                complete: function (e) {
+
+                },
+            });
+        }
+    </script>
+}

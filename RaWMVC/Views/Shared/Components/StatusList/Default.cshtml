@@ -27,9 +27,9 @@
 											<a class="fs-4" href="~/Status/Edit/?idStatus=@status.statusId">
 												<i class="fa-solid fa-file-pen"></i>
 											</a>
-											@* <a class="fs-4" href="~/Status/Delete/?idStatus=@status.statusId">
-									<i class="fa-solid fa-eraser"></i>
-									</a> *@
+											<a class="fs-4" onclick="deleteStatus('@status.statusId')">
+												<i class="fa-solid fa-eraser"></i>
+											</a>
 										</td>
 									</tr>
 								}

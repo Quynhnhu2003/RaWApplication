@@ -60,31 +60,44 @@
                                 @if (User.Identity.IsAuthenticated)
                                 {
                                     <li class="dropdown dropdown-user nav-item">
-                                        <a class="dropdown-toggle nav-link dropdown-user-link" href="#" data-toggle="dropdown">
-                                            <span class="mr-1 user-name text-bold-700">John Doe</span>
-                                            <span class="avatar avatar-online">
-                                                <img src="~/app-assets/images/portrait/small/avatar-s-19.png" alt="avatar">
-                                                <i></i>
-                                            </span>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right">
-                                            <a class="dropdown-item" href="#">
-                                                <i class="material-icons">person_outline</i>
-                                                Edit Profile
+                                        <div class="btn-group text-white">
+                                            <a type="button" class="dropdown-toggle text-decoration-none nav-link" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <span class="mr-1 user-name text-bold-700">John Doe</span>
+                                                @* <img src="~/app-assets/images/portrait/small/avatar-s-19.png" alt="avatar"> *@
                                             </a>
-                                            <a class="dropdown-item" href="#">
-                                                <i class="material-icons">playlist_add_check</i>
-                                                Todo
-                                            </a>
-                                            <a class="dropdown-item" href="#">
-                                                <i class="material-icons">content_paste</i>
-                                                Task
-                                            </a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="login-with-bg-image.html">
-                                                <i class="material-icons">power_settings_new</i>
-                                                Logout
-                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a class="dropdown-item" href="#">
+                                                        <i class="fa-regular fa-user"></i>
+                                                        Profile
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="#">
+                                                        <i class="fa-regular fa-bell"></i>
+                                                        Notification
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="#">
+                                                        <i class="fa-solid fa-book"></i>
+                                                        Library
+                                                    </a>
+                                                </li>
+                                                <div class="dropdown-divider"></div>
+                                                <li>
+                                                    <a class="dropdown-item" href="~/Identity/Account/Logout">
+                                                        <i class="fa-solid fa-gear"></i>
+                                                        Setting
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="~/Identity/Account/Logout">
+                                                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                                                        Logout
+                                                    </a>
+                                                </li>
+                                            </ul>
                                         </div>
                                     </li>
                                 }

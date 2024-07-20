@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using RaWMVC.Data;
 using RaWMVC.Data.Entities;
+using RaWMVC.ViewComponents;
 using RaWMVC.ViewModels;
 
 namespace RaWMVC.Controllers
@@ -40,7 +41,7 @@ namespace RaWMVC.Controllers
 
 				TempData["Message"] = "Failed to add genre!!!!";
 
-				return View(nameof(Index), genreVM);
+				return View(nameof(Index));
 			}
 		}
 
@@ -88,5 +89,49 @@ namespace RaWMVC.Controllers
 				return View(nameof(Index), genreVM);
 			}
 		}
-	}
+        // POST: ArtistController/Delete/5
+        [HttpPost]
+        public async Task<ActionResult> Delete(Guid idGenre)
+        {
+            var status = false;
+            var message = "Not yet implemented!!!";
+            try
+            {
+                //=== Predicate/delgate ===//
+                var genre = await _context.Genres
+                    .Where(t => t.genreId.Equals(idGenre))
+                    .SingleOrDefaultAsync();
+
+                if (genre != null)
+                {
+                    //=== Decreasement Position ===//
+                    var currentPosition = genre.Position;
+                    var listGenre = await _context.Genres
+                        .Where(x => x.Position > currentPosition)
+                        .ToListAsync();
+                    if (listGenre != null && listGenre.Count > 0)
+                    {
+                        foreach (var item in listGenre)
+                        {
+                            item.Position -= 1;
+                        }
+                    }
+                    //=== Remove Genre ====//
+                    _context.Genres.Remove(genre);
+                }
+                await _context.SaveChangesAsync();
+                status = true;
+            }
+            catch
+            {
+                message = "Execution error!!!";
+            }
+            return Json(new { status, message });
+        }
+        public IActionResult ReloadGenreList()
+        {
+
+            return ViewComponent(nameof(GenreList));
+        }
+    }
 }

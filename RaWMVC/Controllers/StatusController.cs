@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Plugins;
 using RaWMVC.Data;
 using RaWMVC.Data.Entities;
+using RaWMVC.ViewComponents;
 using RaWMVC.ViewModels;
 
 namespace RaWMVC.Controllers
@@ -36,7 +38,7 @@ namespace RaWMVC.Controllers
                 TempData["Message"] = "Added tag successfully.";
 
                 //=== Return to continue creating ===//
-                return View(nameof(Index));
+                return RedirectToAction(nameof(Index));
             }
             catch
             {
@@ -44,7 +46,7 @@ namespace RaWMVC.Controllers
                 TempData["Message"] = "Failed to add status.";
 
                 //=== If not successful, check the data again ===//
-                return View(nameof(Index), statusVM);
+                return View(nameof(Index));
             }
         }
 		// GET: StatusController/Edit/5
@@ -90,5 +92,51 @@ namespace RaWMVC.Controllers
                 return View(nameof(Index), statusVM); 
             }
         }
-	}
+
+        // POST: ArtistController/Delete/5
+        [HttpPost]
+        public async Task<ActionResult> Delete(Guid idStatus)
+        {
+            var status = false;
+            var message = "Not yet implemented!!!";
+            try
+            {
+                //=== Predicate/delgate ===//
+                var statusVM = await _context.Status
+                    .Where(t => t.statusId.Equals(idStatus))
+                    .SingleOrDefaultAsync();
+
+                if (statusVM != null)
+                {
+                    //=== Decreasement Position ===//
+                    var currentPosition = statusVM.Position;
+                    var listStatus = await _context.Status
+                        .Where(x => x.Position > currentPosition)
+                        .ToListAsync();
+                    if (listStatus != null && listStatus.Count > 0)
+                    {
+                        foreach (var item in listStatus)
+                        {
+                            item.Position -= 1;
+                        }
+                    }
+                    //=== Remove Status ====//
+                    _context.Status.Remove(statusVM);
+                }
+                await _context.SaveChangesAsync();
+                status = true;
+            }
+            catch
+            {
+                message = "Execution error!!!";
+            }
+            return Json(new { status, message });
+        }
+        public IActionResult ReloadStatusList()
+        {
+
+            return ViewComponent(nameof(StatusList));
+        }
+
+    }
 }
