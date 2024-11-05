@@ -1,0 +1,68 @@
+﻿@model List<RaWMVC.ViewModels.StoryViewModel>
+
+@if (Model != null && Model.Count > 0)
+{
+    foreach (var story in Model)
+    {
+        <div class="container text-dark shadow-lg p-3 mb-5 bg-body-tertiary rounded w-75 story_author_container">
+            <div class="row">
+                <div class="col-3">
+                    @if (story.Medium != null)
+                    {
+                        <a class="text-decoration-none" href="@Url.Action("ListChapter", "Story", new { idStory = @story.StoryId })">
+                            <img class="w-75"
+                                 src="@Url.Content("~/storyImg/" + story.Medium.FileName + "." + story.Medium.Extension)"
+                                 alt="Cover Image" />
+                        </a>
+                    }
+                    else
+                    {
+                        <p>No cover image available</p>
+                    }
+                </div>
+                <div class="col-5 lh-lg">
+                    <a class="text-decoration-none text-dark" href="@Url.Action("ListChapter", "Story", new { idStory = @story.StoryId })">
+                        <h3 class="title mb-5 fw-bold">@story.StoryTitle</h3>
+                        <div class="story_info_details">
+                            <div class="d-flex">
+                                <p>Chapter posted: <span>@story.PublishedChapter</span></p>
+                                <div class="line-5"></div>
+                                <p>Draft: <span>@story.DraftChapter</span></p>
+                            </div>
+                            <p class="updated_date fst-italic">
+                                Updated: <span>@story.PublishDate.ToString("MM - dd - yyyy")</span>
+                            </p>
+                            <div class="profile_infor d-flex">
+                                <div class="reader me-2">
+                                    <i class="fa-solid fa-book-open-reader"></i> 123K
+                                </div>
+                                <div class="rate me-2">
+                                    <i class="fa-solid fa-star"></i> 100K
+                                </div>
+                                <div class="chapter">
+                                    <i class="fa-solid fa-list-ol"></i> 23
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-3 text-center mt-5 btn_group_custom">
+
+                    <!-- Button Modal Edit -->
+                    <button class="btn btn-outline-primary w-50 mb-3"
+                            onclick="modalShowEditStory('@story.StoryId')">
+                        <i class="fa-regular fa-pen-to-square"></i>
+                    </button>
+
+                    <button class="btn btn-outline-danger w-50 mb-3" onclick="deleteStory('@story.StoryId')">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <h1>You don't have any stories yet!!!</h1>
+}

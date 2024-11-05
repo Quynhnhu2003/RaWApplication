@@ -4,14 +4,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RaWMVC.ViewModels
 {
-    [Bind("statusId, statusName, statusDescription")]
+    [Bind("StatusId, StatusName, StatusDescription")]
     public class StatusViewModel
     {
-        public Guid statusId { get; set; }
+        public Guid StatusId { get; set; }
         [MaxLength(Constants.MAXLENGTH_EntitiesName)]
-        public string? statusName { get; set; }
+        public string? StatusName { get; set; }
         [MaxLength(Constants.MAXLENGTH_EntitiesDescription)]
-        public string? statusDescription { get; set; }
+        public string? StatusDescription { get; set; }
         public int Position { get; set; }
     }
 }

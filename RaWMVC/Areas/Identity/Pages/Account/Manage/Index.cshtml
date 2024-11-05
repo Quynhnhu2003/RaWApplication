@@ -5,22 +5,65 @@
     ViewData["ActivePage"] = ManageNavPages.Index;
 }
 
-<h3>@ViewData["Title"]</h3>
-<partial name="_StatusMessage" for="StatusMessage" />
-<div class="row">
-    <div class="col-md-6">
-        <form id="profile-form" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled />
-                <label asp-for="Username" class="form-label"></label>
+<div id="account" class="main_content">
+    <div class="shadow p-3 mb-5 bg-body-tertiary rounded">
+        <form id="profile-form" method="post" enctype="multipart/form-data">
+            <div class="personal_setting_container">
+                <div class="top_page d-flex justify-content-between align-items-center">
+                    <h4 class="fw-bold">Personal Information</h4>
+                    <button id="update-profile-button" type="submit" class="btn btn-primary">
+                        Save Changes <i class="fa-solid fa-save ms-2"></i>
+                    </button>
+                </div>
+
+                <div class="profile-picture mt-4 text-center">
+                    <h5 class="fw-bold">Profile Picture</h5>
+                    <div class="mb-3">
+                        @if (Model.Input.ProfilePicture != null)
+                        {
+                            <img src="@Model.Input.ProfilePicture" alt="Profile Picture" class="img-thumbnail" style="width: 150px; height: 150px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <h5 class="text-danger">Profile Picture not set</h5>
+                        }
+                    </div>
+                    <div class="mt-2">
+                        <input type="file" asp-for="Input.ProfilePictureFile" class="form-control-file" />
+                    </div>
+                </div>
+
+                <div class="name d-flex flex-wrap mt-3 ms-4">
+                    <div class="first_name w-50 mb-3">
+                        <label asp-for="Input.FirstName" class="form-label fw-bold">First Name</label>
+                        <input asp-for="Input.FirstName" class="form-control" />
+                    </div>
+
+                    <div class="last_name w-50 mb-3">
+                        <label asp-for="Input.LastName" class="form-label fw-bold">Last Name</label>
+                        <input asp-for="Input.LastName" class="form-control" />
+                    </div>
+
+                    <div class="user_name w-50 mb-3">
+                        <label asp-for="Username" class="form-label fw-bold">Username</label>
+                        <input asp-for="Username" class="form-control" readonly />
+                    </div>
+
+                    <div class="date_of_birth w-50 mb-3">
+                        <label asp-for="Input.DateOfBirth" class="form-label fw-bold">Date of Birth</label>
+                        <input asp-for="Input.DateOfBirth" type="date" class="form-control" />
+                    </div>
+
+                    <div class="introduction w-50 mb-3">
+                        <label asp-for="Input.Introduction" class="form-label fw-bold">Introduction</label>
+                        <textarea asp-for="Input.Introduction" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="phonenumber w-50 mb-3">
+                        <label asp-for="Input.Phonenumber" class="form-label fw-bold">Phonenumber</label>
+                        <input asp-for="Input.Phonenumber" type="text" class="form-control" />
+                    </div>
+                </div>
             </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number."/>
-                <label asp-for="Input.PhoneNumber" class="form-label"></label>
-                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-            </div>
-            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
         </form>
     </div>
 </div>

@@ -1,0 +1,89 @@
+﻿@model RaWMVC.ViewModels.RoleViewModel
+
+@{
+    ViewData["Title"] = "Role Management";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    var isCreate = Model == null || Model.Id == String.Empty;
+    var actionString = isCreate ? "Create" : "Edit";
+    var buttonString = isCreate ? "Create" : "Edit";
+}
+<h3 class="text-center fw-bold">Role Management</h3>
+<hr />
+<form asp-action="@actionString">
+    <div class="row">
+        <input type="hidden" asp-for="Id" />
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <label class="control-label">Name</label>
+                    <fieldset class="form-group">
+                        <input asp-for="Name" class="form-control" required />
+                    </fieldset>
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <label class="control-label">Descripiton</label>
+                    <fieldset class="form-group">
+                        <input asp-for="Description" class="form-control" />
+                    </fieldset>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group" style="text-align: center;">
+                <input type="submit" value="@buttonString" class="btn btn-primary" />
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div id="role-list">
+                @await Component.InvokeAsync("RoleList")
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        function deleteRole(id) {
+            $.ajax({
+                type: 'POST',
+                url: "/Role/Delete",
+                data: {
+                    id
+                },
+                success: function (data) {
+                    if (data.status) {
+                        ReloadRoleList();
+                    }
+                },
+                error: function (err) {
+
+                },
+                complete: function (e) {
+
+                },
+            });
+        }
+        function ReloadRoleList() {
+            $.ajax({
+                type: 'POST',
+                url: "/Role/ReloadRoleList",
+                data: { },
+                success: function (data) {
+                    let divRoleList = document.getElementById("role-list");
+                    if (divRoleList) {
+                        divRoleList.innerHTML = data;
+                    }
+                },
+                error: function (err) {
+
+                },
+                complete: function (e) {
+
+                },
+            });
+        }
+    </script>
+}

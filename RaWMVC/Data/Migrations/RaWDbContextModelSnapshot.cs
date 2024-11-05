@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using RaW.MVC.Data;
+using RaWMVC.Data;
 
 #nullable disable
 
@@ -17,248 +17,716 @@ namespace RaWMVC.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.5")
+                .HasAnnotation("ProductVersion", "8.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("RaW.MVC.Data.Entities.Genre", b =>
+            modelBuilder.Entity("RaWMVC.Data.Entities.Chapter", b =>
                 {
-                    b.Property<Guid>("genreId")
+                    b.Property<Guid>("ChapterId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Position")
-                        .HasColumnType("int");
+                    b.Property<string>("ChapterContent")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("genreDescription")
+                    b.Property<string>("ChapterTitle")
                         .IsRequired()
                         .HasMaxLength(75)
                         .HasColumnType("nvarchar(75)");
 
-                    b.Property<string>("genreName")
+                    b.Property<bool>("IsDraft")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("PublishDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ReadCount")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("StoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ChapterId");
+
+                    b.HasIndex("StoryId");
+
+                    b.ToTable("Chapters");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.ChapterReadCount", b =>
+                {
+                    b.Property<Guid>("ChapterReadId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ChapterId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ReadDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ChapterReadId");
+
+                    b.ToTable("ChapterReadCounts");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.Comment", b =>
+                {
+                    b.Property<Guid>("CommentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ChapterId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CommentContent")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CommentId");
+
+                    b.HasIndex("ChapterId");
+
+                    b.ToTable("Comments");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.Follow", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("FollowedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("FolloweeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("FollowerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FolloweeId");
+
+                    b.HasIndex("FollowerId");
+
+                    b.ToTable("Follows");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.Genre", b =>
+                {
+                    b.Property<Guid>("GenreId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("genreId");
+
+                    b.Property<string>("GenreDescription")
+                        .HasMaxLength(75)
+                        .HasColumnType("nvarchar(75)");
+
+                    b.Property<string>("GenreName")
                         .IsRequired()
                         .HasMaxLength(25)
                         .HasColumnType("nvarchar(25)");
 
-                    b.HasKey("genreId");
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
+
+                    b.HasKey("GenreId");
 
                     b.ToTable("Genres");
-
-                    b.HasData(
-                        new
-                        {
-                            genreId = new Guid("06691ea9-d2cf-473b-a592-dbab69fe3ffe"),
-                            Position = 0,
-                            genreDescription = "Fast-paced plot with intense events.",
-                            genreName = "Action"
-                        },
-                        new
-                        {
-                            genreId = new Guid("32a29cb8-b605-456d-82f2-76fb5564deee"),
-                            Position = 0,
-                            genreDescription = "Exciting journey or quest.",
-                            genreName = "Adventure"
-                        });
                 });
 
-            modelBuilder.Entity("RaW.MVC.Data.Entities.Status", b =>
+            modelBuilder.Entity("RaWMVC.Data.Entities.Library", b =>
                 {
-                    b.Property<Guid>("statusId")
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("InMyLibrary")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsInReadingList")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("ReadingListsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("StoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReadingListsId");
+
+                    b.HasIndex("StoryId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Libraries");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.Like", b =>
+                {
+                    b.Property<Guid>("LikeId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ChapterId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("LikeCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LikeId");
+
+                    b.HasIndex("ChapterId");
+
+                    b.ToTable("Like");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.Medium", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Extension")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("nvarchar(7)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("Position")
                         .HasColumnType("int");
 
-                    b.Property<string>("statusDescription")
+                    b.Property<byte>("Type")
+                        .HasColumnType("tinyint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Media");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.Notification", b =>
+                {
+                    b.Property<Guid>("NotificationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Link")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Message")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("statusName")
+                    b.Property<string>("UserId")
                         .IsRequired()
-                        .HasMaxLength(75)
-                        .HasColumnType("nvarchar(75)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("statusId");
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Status");
+                    b.HasKey("NotificationId");
 
-                    b.HasData(
-                        new
-                        {
-                            statusId = new Guid("2f85b983-e349-4a46-b829-a77cd30be50f"),
-                            Position = 0,
-                            statusDescription = "Fast-paced plot with intense events.",
-                            statusName = "Ongoing"
-                        },
-                        new
-                        {
-                            statusId = new Guid("bf3a1f0a-cb15-43f4-a270-30bf97762513"),
-                            Position = 0,
-                            statusDescription = "Exciting journey or quest.",
-                            statusName = "Completed"
-                        });
+                    b.ToTable("Notifications");
                 });
 
-            modelBuilder.Entity("RaW.MVC.Data.Entities.Story", b =>
+            modelBuilder.Entity("RaWMVC.Data.Entities.Post", b =>
                 {
-                    b.Property<Guid>("storyId")
+                    b.Property<Guid>("PostId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("Position")
-                        .HasColumnType("int");
-
-                    b.Property<string>("coverImage")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<Guid>("genreId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("publishDate")
-                        .HasMaxLength(10)
+                    b.Property<DateTime>("CreateOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("statusId")
+                    b.Property<string>("PostContent")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("ProfilePicture")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PostId");
+
+                    b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.ReadingList", b =>
+                {
+                    b.Property<Guid>("ReadingListsId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("storyDescription")
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ReadingListsId");
+
+                    b.ToTable("ReadingLists");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.ReadingListStory", b =>
+                {
+                    b.Property<Guid>("ReadingListId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("StoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ReadingListId", "StoryId");
+
+                    b.HasIndex("StoryId");
+
+                    b.ToTable("ReadingListStories");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.Reply", b =>
+                {
+                    b.Property<Guid>("ReplyId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreateAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ProfilePicture")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReplyContent")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ReplyId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("Replies");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.Report", b =>
+                {
+                    b.Property<Guid>("ReportId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AdminComments")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("AuthorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AuthorName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsApproved")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<bool>("IsReviewed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<string>("Reason")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("storyTitle")
+                    b.Property<DateTime>("ReportDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("StoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ReportId");
+
+                    b.HasIndex("StoryId");
+
+                    b.ToTable("Reports");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.ScheduledDelete", b =>
+                {
+                    b.Property<Guid>("ScheduledDeleteId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ScheduledTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("StoryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ScheduledDeleteId");
+
+                    b.ToTable("ScheduledDeletes");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.Status", b =>
+                {
+                    b.Property<Guid>("StatusId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("statusId");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StatusDescription")
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<Guid>("tagId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("StatusName")
+                        .IsRequired()
+                        .HasMaxLength(75)
+                        .HasColumnType("nvarchar(75)");
 
-                    b.HasKey("storyId");
+                    b.HasKey("StatusId");
 
-                    b.HasIndex("genreId");
-
-                    b.HasIndex("statusId");
-
-                    b.HasIndex("tagId");
-
-                    b.ToTable("Stories");
-
-                    b.HasData(
-                        new
-                        {
-                            storyId = new Guid("15d1df89-fe11-45e5-88c9-2a2b4ec0d171"),
-                            Position = 0,
-                            genreId = new Guid("32a29cb8-b605-456d-82f2-76fb5564deee"),
-                            publishDate = new DateTime(2024, 7, 12, 17, 52, 24, 842, DateTimeKind.Local).AddTicks(4657),
-                            statusId = new Guid("2f85b983-e349-4a46-b829-a77cd30be50f"),
-                            storyDescription = "While drawing in class at Stagwood School, 12-year old Cal sees a frog staring at him through the window. Stranger than that, is the fact that this frog happens to be wearing glasses.",
-                            storyTitle = "THE GUARDIANS OF LORE",
-                            tagId = new Guid("acecd581-de79-498d-b4d6-c078a688e407")
-                        },
-                        new
-                        {
-                            storyId = new Guid("63874287-d204-4ad0-b9fe-f576885b605b"),
-                            Position = 0,
-                            genreId = new Guid("32a29cb8-b605-456d-82f2-76fb5564deee"),
-                            publishDate = new DateTime(2024, 7, 12, 17, 52, 24, 842, DateTimeKind.Local).AddTicks(4677),
-                            statusId = new Guid("2f85b983-e349-4a46-b829-a77cd30be50f"),
-                            storyDescription = "Do you know what the Hippos of Africa do long after the Elephants and Rhinos have gone to sleep? This rhythmical story will teach kids about the habits of Hippos at night. Full of true facts and fun rhymes, kids stories don’t get more fun than this! ",
-                            storyTitle = "WHEN DO HIPPOS PLAY?",
-                            tagId = new Guid("48fa837c-6f38-4bf3-a52e-150d326f65d7")
-                        });
+                    b.ToTable("Status");
                 });
 
-            modelBuilder.Entity("RaW.MVC.Data.Entities.Tag", b =>
+            modelBuilder.Entity("RaWMVC.Data.Entities.Story", b =>
                 {
-                    b.Property<Guid>("tagId")
+                    b.Property<Guid>("StoryId")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("CoverImage")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("DraftChapter")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("GenreId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("MediumId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Position")
                         .HasColumnType("int");
 
-                    b.Property<string>("tagDescription")
+                    b.Property<int>("PostedChapter")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("PublishDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("StatusId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("StoryDescription")
+                        .IsRequired()
+                        .HasMaxLength(5000)
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StoryTitle")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("tagName")
+                    b.Property<Guid>("TagId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("StoryId");
+
+                    b.HasIndex("GenreId");
+
+                    b.HasIndex("MediumId");
+
+                    b.HasIndex("StatusId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("Stories");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.Tag", b =>
+                {
+                    b.Property<Guid>("TagId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("tagId");
+
+                    b.Property<int>("Position")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TagDescription")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("TagName")
                         .IsRequired()
                         .HasMaxLength(75)
                         .HasColumnType("nvarchar(75)");
 
-                    b.HasKey("tagId");
+                    b.HasKey("TagId");
 
                     b.ToTable("Tags");
-
-                    b.HasData(
-                        new
-                        {
-                            tagId = new Guid("2ce6c267-d3fc-4820-8f04-6547696bab28"),
-                            Position = 0,
-                            tagDescription = "Romance between male characters.",
-                            tagName = "Boylove"
-                        },
-                        new
-                        {
-                            tagId = new Guid("e7196f16-0bf0-478f-8892-2ef83d09d14c"),
-                            Position = 0,
-                            tagDescription = "Romance between female characters.",
-                            tagName = "Girllove"
-                        },
-                        new
-                        {
-                            tagId = new Guid("acecd581-de79-498d-b4d6-c078a688e407"),
-                            Position = 0,
-                            tagDescription = "Character with albinism.",
-                            tagName = "Albino"
-                        },
-                        new
-                        {
-                            tagId = new Guid("48fa837c-6f38-4bf3-a52e-150d326f65d7"),
-                            Position = 0,
-                            tagDescription = "Character with pale skin tone.",
-                            tagName = "Pale"
-                        },
-                        new
-                        {
-                            tagId = new Guid("01e61df7-c444-4555-a4ad-6b6cd8cb182f"),
-                            Position = 0,
-                            tagDescription = "Character with dark brown skin.",
-                            tagName = "Dark brown skin tone"
-                        });
                 });
 
-            modelBuilder.Entity("RaW.MVC.Data.Entities.Story", b =>
+            modelBuilder.Entity("RaWMVC.Data.Entities.Chapter", b =>
                 {
-                    b.HasOne("RaW.MVC.Data.Entities.Genre", "Genre")
-                        .WithMany()
-                        .HasForeignKey("genreId")
+                    b.HasOne("RaWMVC.Data.Entities.Story", "Story")
+                        .WithMany("Chapters")
+                        .HasForeignKey("StoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RaW.MVC.Data.Entities.Status", "Status")
-                        .WithMany()
-                        .HasForeignKey("statusId")
+                    b.Navigation("Story");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.Comment", b =>
+                {
+                    b.HasOne("RaWMVC.Data.Entities.Chapter", "Chapter")
+                        .WithMany("Comments")
+                        .HasForeignKey("ChapterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RaW.MVC.Data.Entities.Tag", "Tag")
+                    b.Navigation("Chapter");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.Library", b =>
+                {
+                    b.HasOne("RaWMVC.Data.Entities.ReadingList", "ReadingLists")
                         .WithMany()
-                        .HasForeignKey("tagId")
+                        .HasForeignKey("ReadingListsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RaWMVC.Data.Entities.Story", "Story")
+                        .WithMany("Libraries")
+                        .HasForeignKey("StoryId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("ReadingLists");
+
+                    b.Navigation("Story");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.Like", b =>
+                {
+                    b.HasOne("RaWMVC.Data.Entities.Chapter", null)
+                        .WithMany("Likes")
+                        .HasForeignKey("ChapterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.ReadingListStory", b =>
+                {
+                    b.HasOne("RaWMVC.Data.Entities.ReadingList", "ReadingLists")
+                        .WithMany("ReadingListStories")
+                        .HasForeignKey("ReadingListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RaWMVC.Data.Entities.Story", "Story")
+                        .WithMany("ReadingListStories")
+                        .HasForeignKey("StoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ReadingLists");
+
+                    b.Navigation("Story");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.Reply", b =>
+                {
+                    b.HasOne("RaWMVC.Data.Entities.Post", "Post")
+                        .WithMany("Replies")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.Report", b =>
+                {
+                    b.HasOne("RaWMVC.Data.Entities.Story", "Story")
+                        .WithMany("Reports")
+                        .HasForeignKey("StoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Story");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.Story", b =>
+                {
+                    b.HasOne("RaWMVC.Data.Entities.Genre", "Genre")
+                        .WithMany()
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RaWMVC.Data.Entities.Medium", "Medium")
+                        .WithMany("Stories")
+                        .HasForeignKey("MediumId");
+
+                    b.HasOne("RaWMVC.Data.Entities.Status", "Status")
+                        .WithMany()
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RaWMVC.Data.Entities.Tag", "Tag")
+                        .WithMany()
+                        .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Genre");
 
+                    b.Navigation("Medium");
+
                     b.Navigation("Status");
 
                     b.Navigation("Tag");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.Chapter", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Likes");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.Medium", b =>
+                {
+                    b.Navigation("Stories");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.Post", b =>
+                {
+                    b.Navigation("Replies");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.ReadingList", b =>
+                {
+                    b.Navigation("ReadingListStories");
+                });
+
+            modelBuilder.Entity("RaWMVC.Data.Entities.Story", b =>
+                {
+                    b.Navigation("Chapters");
+
+                    b.Navigation("Libraries");
+
+                    b.Navigation("ReadingListStories");
+
+                    b.Navigation("Reports");
                 });
 #pragma warning restore 612, 618
         }

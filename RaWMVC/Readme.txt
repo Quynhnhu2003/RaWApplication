@@ -1,7 +1,7 @@
 ﻿remove-migration
 
-add-migration AddRaWDbContext -OutputDir Data/Migrations
+add-migration -context RaWDbContext ten-migration
 update-database
 
-Add-Migration CreateIdentitySchema -context RaWIdentityContext -OutputDir Data/IdentityMigrations
+Add-Migration CreateIdentitySchema -context RaWIdentityContext
 update-database -context RaWIdentityContext 

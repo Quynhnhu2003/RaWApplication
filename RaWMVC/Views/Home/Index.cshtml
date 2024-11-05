@@ -1,151 +1,257 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Identity
+@using RaWMVC.Areas.Identity.Data
+@inject SignInManager<RaWMVCUser> SignInManager
+@model RaWMVC.ViewModels.StoryViewModel
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="welcome_page">
-    <div class="welcome_container">
-        <img class="img_sheep" src="./assets/img/mascot_sheep.png" alt="" />
-        <div class="welcome_content">
-            <h2 class="text-center">Hi, we’re Read and Write.</h2>
-            <p>
-                As the globe's largest reading and writing community, boasting
-                countless users globally who dedicate over 30 minutes daily to an
-                array of genre-spanning tales, RaW has transformed the landscape
-                of storytelling. It marks the dawn of a fresh chapter for a varied
-                generation of writers and their dedicated followers.
-            </p>
-        </div>
-        <div class="welcome_btn d-flex text-center">
-            <button>
-                <a href=""> Start Reading </a>
-            </button>
-            <button>
-                <a href="">Start Writting</a>
-            </button>
-        </div>
-        <img class="img_fox" src="./assets/img/mascot_fox.png" alt="" />
-    </div>
-</div>
-<div class="list_categories">
-    <h2 class="text-center">Some categories in RaW</h2>
-    <div class="list_container">
-        <ol>
-            <li>
-                <img src="./assets/img/img_cover_romance.jpg" alt="" />
-                <p>Romance</p>
-            </li>
-            <li>
-                <img src="./assets/img/img_cover_Action_and_Adventure.jpg"
-                     alt="" />
-                <p>Action and Adventure</p>
-            </li>
-            <li>
-                <img src="./assets/img/img_cover_Fantasy.jpg" alt="" />
-                <p>Fantasy</p>
-            </li>
-            <li>
-                <img src="./assets/img/img_cover_Fanfiction.jpg" alt="" />
-                <p>Fanfiction</p>
-            </li>
-            <li>
-                <img src="./assets/img/img_cover_Magical_Realism.jpg" alt="" />
-                <p>Magical Realism</p>
-            </li>
-            <li>
-                <img src="./assets/img/img_cover_Thriller.jpg" alt="" />
-                <p>Thriller</p>
-            </li>
-            <li>
-                <img src="./assets/img/img_cover_Science_Fiction.jpg" alt="" />
-                <p>Science Fiction</p>
-            </li>
-            <li>
-                <img src="./assets/img/img_cover_Crossover_Stories.jpg" alt="" />
-                <p>Crossover</p>
-            </li>
-            <li>
-                <img src="./assets/img/img_cover_Horror.jpg" alt="" />
-                <p>Horror</p>
-            </li>
-        </ol>
-    </div>
-</div>
-<div class="how_to_use">
-    <div class="how_to_use_title text-center">
-        <h2>How RaW work</h2>
-    </div>
-    <div class="how_to_use_content">
-        <div class="step_above d-flex">
-            <div class="step_1 d-flex">
-                <h1>01</h1>
-                <div class="step_content">
-                    <h3>Create</h3>
+
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <main class="main_content mb-5">
+        <div>
+            <div class="welcome_back text-center">
+                <h2>Welcome back, @User?.Identity?.Name</h2>
+            </div>
+            <div class="recommends">
+                <h3 class="text-uppercase">Recommends</h3>
+                <div class="container_slide">
+                    <div class="slide">
+                        @foreach (var spotlight in Model.SuggestedStories)
+                        {
+                            <div class="item shadow bg-body rounded" style="background-image: url('@Url.Content("~/storyImg/" + spotlight.Medium.FileName + "." + spotlight.Medium.Extension)');">
+                                <div class="content">
+                                    <div class="name">@spotlight.StoryTitle</div>
+                                    <div class="des">@spotlight.StoryDescription</div>
+                                    <a href="@Url.Action("Detail", "Story", new { idStory = spotlight.StoryId })" class="text-decoration-none text-dark bg-light border rounded-3">
+                                        See More
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="button">
+                        <button class="prev"><i class="fa-solid fa-arrow-left"></i></button>
+                        <button class="next"><i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </div>
+                <div class="top_pic">
+                    <h3 class="text-uppercase">Top Picks For Yous</h3>
+                    <div class="top_pic_content d-flex">
+                        @foreach (var story in Model.HotestStories)
+                        {
+                            <a href="@Url.Action("Detail", "Story", new { idStory = story.StoryId })" class="text-decoration-none text-dark bg-light border rounded-3">
+                                <div class="top_pic_item">
+                                    <img src="@Url.Content("~/storyImg/" + story.Medium.FileName+ "." + story.Medium.Extension)" alt="">
+                                    <div class="tag_story">
+                                        <a href="#">
+                                            @story.TagName
+                                        </a>
+                                        <a href="#">
+                                            @story.StatusName
+                                        </a>
+                                    </div>
+                                </div>
+                            </a>
+                        }
+                    </div>
+                </div>
+                <div class="completed mb-2">
+                    <h3 class="text-uppercase">Newest Story</h3>
+                    <div class="top_pic_content d-flex">
+                        @foreach (var story in Model.NewestStories)
+                        {
+                            <a href="@Url.Action("Detail", "Story", new { idStory = story.StoryId })" class="text-decoration-none text-dark bg-light border rounded-3">
+                                <div class="top_pic_item">
+                                    <img src="@Url.Content("~/storyImg/" + story.Medium.FileName+ "." + story.Medium.Extension)" alt="">
+                                    <div class="tag_story">
+                                        <a href="#">
+                                            @story.TagName
+                                        </a>
+                                        <a href="#">
+                                            @story.StatusName
+                                        </a>
+                                    </div>
+                                </div>
+                            </a>
+                        }
+                    </div>
+                </div>
+
+                <div class="completed mb-2">
+                    <h3 class="text-uppercase">Completed</h3>
+                    <div class="top_pic_content d-flex">
+                        @foreach (var story in Model.CompletedStories)
+                        {
+                            <a href="@Url.Action("Detail", "Story", new { idStory = story.StoryId })" class="text-decoration-none text-dark bg-light border rounded-3">
+                                <div class="top_pic_item">
+                                    <img src="@Url.Content("~/storyImg/" + story.Medium.FileName+ "." + story.Medium.Extension)" alt="">
+                                    <div class="tag_story">
+                                        <a href="#">
+                                            @story.TagName
+                                        </a>
+                                        <a href="#">
+                                            @story.StatusName
+                                        </a>
+                                    </div>
+                                </div>
+                            </a>
+                        }
+                    </div>
+                </div>
+    </main>
+}else
+{
+    <main class="main_content">
+        <div class="welcome_page">
+            <div class="welcome_container">
+                <img class="img_sheep" src="~/assets/img/mascot_sheep.png" alt="" />
+                <div class="welcome_content">
+                    <h2 class="text-center">Hi, we’re Read and Write.</h2>
                     <p>
-                        Unleash your unique imagination and narrate your story on RaW.
-                        Utilize the platform's built-in writing features and essential
-                        resources to craft your own narrative.
+                        As the globe's largest reading and writing community, boasting
+                        countless users globally who dedicate over 30 minutes daily to an
+                        array of genre-spanning tales, RaW has transformed the landscape
+                        of storytelling. It marks the dawn of a fresh chapter for a varied
+                        generation of writers and their dedicated followers.
                     </p>
                 </div>
+                <div class="welcome_btn d-flex text-center">
+                    <button>
+                        <a href="~/Identity/Account/Login"> Start Reading </a>
+                    </button>
+                    <button>
+                        <a href="~/Identity/Account/Login">Start Writting</a>
+                    </button>
+                </div>
+                <img class="img_fox" src="~/assets/img/mascot_fox.png" alt="" />
             </div>
-            <div class="step_2 d-flex">
-                <h1>02</h1>
-                <div class="step_content">
-                    <h3>Marketing</h3>
-                    <p>
-                        Expand your global readership through our customized marketing
-                        strategies, designed to boost the exposure of your stories and
-                        inspire you to create even more captivating narratives.
-                    </p>
+        </div>
+        <div class="list_categories">
+            <h2 class="text-center">Some categories in RaW</h2>
+            <div class="list_container">
+                <ol>
+                    <li>
+                        <img src="~/assets/img/img_cover_romance.jpg" alt="" />
+                        <p>Romance</p>
+                    </li>
+                    <li>
+                        <img src="~/assets/img/img_cover_Action_and_Adventure.jpg"
+                             alt="" />
+                        <p>Action and Adventure</p>
+                    </li>
+                    <li>
+                        <img src="~/assets/img/img_cover_Fantasy.jpg" alt="" />
+                        <p>Fantasy</p>
+                    </li>
+                    <li>
+                        <img src="~/assets/img/img_cover_Fanfiction.jpg" alt="" />
+                        <p>Fanfiction</p>
+                    </li>
+                    <li>
+                        <img src="~/assets/img/img_cover_Magical_Realism.jpg" alt="" />
+                        <p>Magical Realism</p>
+                    </li>
+                    <li>
+                        <img src="~/assets/img/img_cover_Thriller.jpg" alt="" />
+                        <p>Thriller</p>
+                    </li>
+                    <li>
+                        <img src="~/assets/img/img_cover_Science_Fiction.jpg" alt="" />
+                        <p>Science Fiction</p>
+                    </li>
+                    <li>
+                        <img src="~/assets/img/img_cover_Crossover_Stories.jpg" alt="" />
+                        <p>Crossover</p>
+                    </li>
+                    <li>
+                        <img src="~/assets/img/img_cover_Horror.jpg" alt="" />
+                        <p>Horror</p>
+                    </li>
+                </ol>
+            </div>
+        </div>
+        <div class="how_to_use">
+            <div class="how_to_use_title text-center">
+                <h2>How RaW work</h2>
+            </div>
+            <div class="how_to_use_content">
+                <div class="step_above d-flex">
+                    <div class="step_1 d-flex">
+                        <h1>01</h1>
+                        <div class="step_content">
+                            <h3>Create</h3>
+                            <p>
+                                Unleash your unique imagination and narrate your story on RaW.
+                                Utilize the platform's built-in writing features and essential
+                                resources to craft your own narrative.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="step_2 d-flex">
+                        <h1>02</h1>
+                        <div class="step_content">
+                            <h3>Marketing</h3>
+                            <p>
+                                Expand your global readership through our customized marketing
+                                strategies, designed to boost the exposure of your stories and
+                                inspire you to create even more captivating narratives.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="step_below">
+                    <div class="step_3 d-flex">
+                        <h1>03</h1>
+                        <div class="step_content">
+                            <h3>Maintain</h3>
+                            <p>
+                                Engage with enthusiastic readers who are captivated by your
+                                tales, sparking dialogues to share narratives and discuss your
+                                upcoming stories.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="step_below">
-            <div class="step_3 d-flex">
-                <h1>03</h1>
-                <div class="step_content">
-                    <h3>Maintain</h3>
-                    <p>
-                        Engage with enthusiastic readers who are captivated by your
-                        tales, sparking dialogues to share narratives and discuss your
-                        upcoming stories.
-                    </p>
+        <div class="number_counter">
+            <!-- Counter -->
+            <div class="fh5co-counter counters">
+                <div class="counter-inner site-container">
+                    <div class="single-count">
+                        <span class="count" data-count="50">0</span>
+                        <div class="single_count__text">
+                            <p>Books</p>
+                        </div>
+                    </div>
+                    <div class="single-count">
+                        <span class="count" data-count="600">0</span>
+                        <div class="single-count__text">
+                            <!-- <img src="~/assets/img/reader_counter.png" alt="counter icon" /> -->
+                            <p>Reader</p>
+                        </div>
+                    </div>
+                    <div class="single-count">
+                        <span class="count" data-count="2000">0</span>
+                        <div class="single-count__text">
+                            <!-- <img src="~/assets/img/time_counter.png" alt="counter icon" /> -->
+                            <p>Times</p>
+                        </div>
+                    </div>
+                    <div class="single-count">
+                        <span class="count" data-count="125">0</span>
+                        <div class="single-count__text">
+                            <!-- <img src="~/assets/img/author_counter.png" alt="counter icon" /> -->
+                            <p>Author</p>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <!-- Counter -->
         </div>
-    </div>
-</div>
-<div class="number_counter">
-    <!-- Counter -->
-    <div class="fh5co-counter counters">
-        <div class="counter-inner site-container">
-            <div class="single-count">
-                <span class="count" data-count="50">0</span>
-                <div class="single_count__text">
-                    <p>Books</p>
-                </div>
-            </div>
-            <div class="single-count">
-                <span class="count" data-count="600">0</span>
-                <div class="single-count__text">
-                    <!-- <img src="./assets/img/reader_counter.png" alt="counter icon" /> -->
-                    <p>Reader</p>
-                </div>
-            </div>
-            <div class="single-count">
-                <span class="count" data-count="2000">0</span>
-                <div class="single-count__text">
-                    <!-- <img src="./assets/img/time_counter.png" alt="counter icon" /> -->
-                    <p>Times</p>
-                </div>
-            </div>
-            <div class="single-count">
-                <span class="count" data-count="125">0</span>
-                <div class="single-count__text">
-                    <!-- <img src="./assets/img/author_counter.png" alt="counter icon" /> -->
-                    <p>Author</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Counter -->
-</div>
+    </main>
+}

@@ -1,0 +1,80 @@
+﻿@model RaWMVC.ViewModels.ChapterViewModel
+
+<main class="main_content">
+    <div class="subnavigate d-flex rounded w-100" style="height: 60px">
+        <div class="chapter_number d-flex justify-content-between w-100">
+            <div class="btn-group">
+                <a class="btn_chapter ms-3 mt-3 text-dark text-decoration-none"
+                   href="~/Story/ListChapter?idStory=@Model.StoryId">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    <span class="fw-bold fs-4">@Model.ChapterTitle</span>
+                </a>
+            </div>
+            <div class="save_cancel mt-2 me-3">
+                <button type="button" class="btn_cancel">Cancel</button>
+@*                 <button type="submit"
+                        class="btn_save_storyD"
+                        onclick="editChapter('@Model.ChapterId');"
+                        style="min-width: 75px">
+                    Save
+                </button> *@
+                <button type="button" class="btn_save_storyD" onclick="editChapter('@Model.ChapterId', false);">Save</button>
+                <button type="button" class="btn_save_storyD" onclick="editChapter('@Model.ChapterId', true);">Publish</button>
+                <button type="button" class="btn_save_storyD">Preview</button>
+            </div>
+        </div>
+    </div>
+    <div class="main_content_dashboard mt-3 p-2">
+        <form asp-action="Edit" id="editChapterForm" enctype="multipart/form-data">
+            <input type="hidden" asp-for="ChapterId" class="form-control" />
+            <input type="hidden" asp-for="StoryId" class="form-control" />
+            <input type="hidden" asp-for="PublishDate" name="name" value="" />
+
+            <section class="content_editor_container">
+                <div class="content-wrapper mt-4">
+                    <div class="d-flex text-center w-100 fs-3 justify-content-center align-self-center">
+                        <input class="border border-0 w-25 ms-2"
+                               id="chapterTitle"
+                               asp-for="ChapterTitle"
+                               placeholder="Untitled Part" />
+                    </div>
+                    <textarea contenteditable="true"
+                              asp-for="ChapterContent"
+                              id="chapterContent"
+                              class="mt-4 border border-0 w-100 h-100 w-100" placeholder="Click here to start writing...........">
+                    </textarea>
+                </div>
+            </section>
+        </form>
+    </div>
+</main>
+@section Scripts {
+    <script>
+        function editChapter(idChapter, isPublish) {
+            let formData = new FormData(document.getElementById("editChapterForm"));
+            formData.append("ChapterId", idChapter);
+            formData.append("isPublish", isPublish); // Thêm trạng thái xuất bản vào formData
+
+            $.ajax({
+                type: "POST",
+                url: "/Chapter/Edit",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (data.success) {
+                        alert("Chapter updated successfully!");
+                        // Optionally clear form or redirect
+                    } else {
+                        alert("Error: " + data.message);
+                    }
+                },
+                error: function (err) {
+                    console.error("Error:", err);
+                    alert("An error occurred while updating the chapter.");
+                }
+            });
+        }
+
+    </script>
+}

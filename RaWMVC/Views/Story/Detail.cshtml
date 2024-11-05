@@ -1,0 +1,186 @@
+﻿@model RaWMVC.ViewModels.StoryViewModel
+
+<main>
+    <div class="top_story_details d-flex w-100">
+        <img src="@Url.Content("~/storyImg/" + Model.Medium.FileName+ "." + Model.Medium.Extension)"
+                alt=""
+                class="cover_story me-5" />
+        <div class="infor_story w-75">
+            <h3 class="w-100 fw-bold">
+                @Model.StoryTitle
+            </h3>
+            <ul class="tags_story d-flex mt-4">
+                <li>
+                    <a class="text-decoration-none text-white ms-2 bg-success border rounded-pill"
+                        href="#">@Model.StatusName</a>
+                </li>
+                <li>
+                    <a class="text-decoration-none text-white ms-2 bg-danger border rounded-pill"
+                        href="#">@Model.TagName</a>
+                </li>
+                <li>
+                    <a class="text-decoration-none text-white ms-2 bg-secondary border rounded-pill"
+                        href="#">@Model.GenreName</a>
+                </li>
+            </ul>
+            <div class="author d-flex align-items-center mt-4">
+                <img src="@Url.Content(Model.ProfilePicture ?? "~/assets/img/default_avatar.png")" alt="" />
+                <p class="fst-italic ms-3 text-center">@Model.Username</p>
+            </div>
+            <div class="profile_infor d-flex mt-4">
+                <div class="reader me-2">
+                    <i class="fa-solid fa-book-open-reader"></i> @Model.TotalReadCount
+                </div>
+                <div class="rate me-2"><i class="fa-solid fa-star"></i> 100K</div>
+                <div class="chapter"><i class="fa-solid fa-list-ol"></i> @Model.Chapters.Count()</div>
+            </div>
+            <p class="description mt-4">
+                @Model.StoryDescription
+            </p>
+            <div class="btn_group mt-4 d-flex w-100">
+                <a class="btn_link text-center" href="#">Start reading</a>
+                <div class="dropdown">
+                    <button class="btn_add" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        Add <i class="fa-solid fa-plus"></i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <li>
+                            <a class="dropdown-item" id="addToLibrary" onclick="addToLibrary('@Model.StoryId', true, '@Model.CurrentListId')">
+                                My Library
+                            </a>
+                            <input type="checkbox" id="myLibraryCheckbox" hidden checked />
+                        </li>
+                        @if (Model.ReadingLists != null)
+                        {
+                            foreach (var readingList in Model.ReadingLists)
+                            {
+                                if (readingList.Name != "Current List")
+                                {
+                                    <li>
+                                        <a class="dropdown-item" onclick="addToLibrary('@Model.StoryId', true, '@readingList.ReadingListsId')">
+                                            @readingList.Name
+                                        </a>
+                                    </li>
+                                }
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="bottom_story_details d-flex w-auto justify-content-between mt-5">
+        <div class="toc w-50">
+            @if (Model.Chapters.Any())
+            {
+                <ul class="chapter ms-5 shadow p-3 mb-5 bg-body-tertiary rounded">
+                    @foreach (var chapter in Model.Chapters)
+                    {
+                        <li class="w-100 pe-4">
+                            <a href="@Url.Action("Detail", "Chapter", new { idChapter = chapter.ChapterId })" class="d-flex text-decoration-none text-dark w-100 justify-content-between">
+                                <p>@chapter.ChapterTitle</p>
+                                <span class="float-end fst-italic">@chapter.PublishDate</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <ul class="chapter ms-5 shadow p-3 mb-5 bg-body-tertiary rounded">
+                    <li class="w-100 pe-4">No chapters available.</li>
+                </ul>
+            }
+        </div>
+        <div class="right_container w-50 me-5 ms-5">
+            <button type="button" class="ranking d-flex shadow p-1 mb-5 rounded text-decoration-none text-dark fs-5 w-75 align-items-center justify-content-center"
+                    style="background-color: white;"
+                    data-bs-toggle="modal" 
+                    data-bs-target="#exampleModal"
+                    onclick="openModalReport('@Model.StoryId')">
+                <i class="fa-regular fa-flag p-3"></i>
+                <p class="mt-3">Report</p>
+            </button>
+            <div class="rcm_story">
+                <h3>You may also like</h3>
+                <div class="also_like_story shadow p-3 mb-5 bg-body-tertiary rounded">
+                    @foreach(var story in Model.SuggestedStories)
+                    {
+                        <a href="@Url.Action("Detail", "Story", new { idStory = story.StoryId })" class="text-decoration-none text-dark">
+                            <div class="also_like_item d-flex w-100">
+                                <img src="@Url.Content("~/storyImg/" + story.Medium.FileName + "." + story.Medium.Extension)"
+                                     alt="Cover image" />
+                                <div class="infor_item ms-4">
+                                    <strong>
+                                        @story.StoryTitle
+                                    </strong>
+                                    <div class="profile_infor d-flex mt-4">
+                                        <div class="reader me-2">
+                                            <i class="fa-solid fa-book-open-reader"></i> 123K
+                                        </div>
+                                        <div class="rate me-2">
+                                            <i class="fa-solid fa-star"></i> 100K
+                                        </div>
+                                        <div class="chapter">
+                                            <i class="fa-solid fa-list-ol"></i> 23
+                                        </div>
+                                    </div>
+                                    <p class="description mt-4">
+                                        @story.StoryDescription
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <script>
+        function addToLibrary(storyId, addToLibrary = true, readingListId = null) {
+            var currentListId = '@Model.CurrentListId';
+            let addToMyLibrary = document.getElementById("myLibraryCheckbox").checked;
+
+            $.ajax({
+                url: "/Library/AddStory",
+                type: 'POST',
+                data: {
+                    storyId: storyId,
+                    addToLibrary: addToMyLibrary,
+                    readingListId: readingListId
+                },
+                success: function () {
+                    alert("Story added to your library and selected reading list!");
+                    window.location.reload();
+                },
+                error: function (xhr) {
+                    console.log(xhr.responseText);
+                    if (xhr.status === 400) {
+                        alert("This story is already in your library.");
+                    } else {
+                        alert("Failed to add the story.");
+                    }
+                }
+            });
+        }
+       //=== Report ===//
+        function openModalReport(storyId) {
+            $.ajax({
+                type: "GET",
+                url: "/Report/ReportStory",
+                data: { storyId: storyId },
+                success: function (data) {
+                    openModal(data, modalSize.large)
+                },
+                error: function (xhr, status, error) {
+                    console.log("Error loading report modal: " + error);
+                }
+            });
+        }
+
+    </script>
+}

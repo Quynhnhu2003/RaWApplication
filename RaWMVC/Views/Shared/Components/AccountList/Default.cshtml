@@ -1,0 +1,57 @@
+﻿@model List<RaWMVC.ViewModels.AccountServiceVM>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-content collapse show">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Username</th>
+                                <th scope="col">Role</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                foreach (var account in Model)
+                                {
+                                    <tr>
+                                        <th scope="row">@account.User.UserName</th>
+                                        <td>
+                                            @if (string.IsNullOrEmpty(account.Role))
+                                            {
+                                                @* If the account has no role, display "User" *@
+                                                <p>User</p>
+                                            }
+                                            else
+                                            {
+                                                @account.Role
+                                            }
+                                        </td>
+                                        <td>
+                                            <a class="fs-4 btn btn-outline-primary" asp-action="Edit" asp-route-id="@account.User.Id">
+                                                <i class="fa-solid fa-file-pen"></i>
+                                            </a>
+                                            <a class="fs-4 btn btn-outline-danger" onclick="deleteAccount('@account.User.Id')">
+                                                <i class="fa-solid fa-eraser"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="3">Empty data</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

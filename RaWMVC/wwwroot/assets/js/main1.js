@@ -31,12 +31,14 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", (event) => {
   const editableTitle = document.getElementById("editable-title");
 
-  editableTitle.addEventListener("click", () => {
-    editableTitle.setAttribute("contenteditable", "true");
-    editableTitle.focus();
-  });
+    if (editableTitle) {
+        editableTitle.addEventListener("click", () => {
+            editableTitle.setAttribute("contenteditable", "true");
+            editableTitle.focus();
+        });
 
-  editableTitle.addEventListener("blur", () => {
-    editableTitle.removeAttribute("contenteditable");
-  });
+        editableTitle.addEventListener("blur", () => {
+            editableTitle.removeAttribute("contenteditable");
+        });
+    }
 });

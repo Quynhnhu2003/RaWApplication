@@ -1,0 +1,36 @@
+﻿@model RaWMVC.Data.Entities.Report
+
+<div class="modal-header">
+    <h3 class="modal-title text-center w-100" id="exampleModalLabel">
+        Report Story
+    </h3>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<form asp-action="ReportStory" method="post">
+    <div class="modal-body">
+        <h6 class="w-100 text-center">Why are you reporting this story?</h6>
+        <div>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="StoryId" class="form-control" />
+            <input type="hidden" asp-for="Story.UserId" class="form-control" />
+            <input type="hidden" asp-for="Story.Username" class="form-control" />
+            <div class="text-success text-uppercase fs-3">@TempData["MessageFail"]</div>
+            <div id="errorMessage" class="text-danger"></div>
+            <div class="input_details">
+                <label class="input__label">Reason</label>
+                <select asp-for="Reason" class="form-select" required>
+                    <option value="Inappropriate Content">Inappropriate Content</option>
+                    <option value="Copyright Infringement">Copyright Infringement</option>
+                </select>
+            </div>
+            <div class="input_details">
+                <label class="input__label">Description</label>
+                <textarea asp-for="Description" class="input__field input__field--textarea"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn_cancel" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn_save_storyD">Save changes</button>
+    </div>
+</form>

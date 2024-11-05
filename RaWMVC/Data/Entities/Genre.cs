@@ -4,11 +4,11 @@
     {
         public Genre()
         {
-            genreId = Guid.NewGuid();
+            GenreId = Guid.NewGuid();
         }
-        public Guid genreId { get; set; }
-        public string genreName { get; set; }
-        public string? genreDescription { get; set; }
+        public Guid GenreId { get; set; }
+        public string GenreName { get; set; }
+        public string? GenreDescription { get; set; }
         public int Position { get; set; }
     }
 }

@@ -3,25 +3,25 @@
 @{
     ViewData["Title"] = "Status Management";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
-    var isCreate = Model == null || Model.statusId == Guid.Empty;
+    var isCreate = Model == null || Model.StatusId == Guid.Empty;
     var actionString = isCreate ? "Create" : "Edit";
     var buttonString = isCreate ? "Create" : "Edit";
 }
 
-<h1 class="text-center">Status Management</h1>
+<h3 class="text-center fw-bold">Status Management</h3>
 <hr />
 <form asp-action="@actionString" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="statusId" class="form-control" />
+    <input type="hidden" asp-for="StatusId" class="form-control" />
     <div class="row">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
                     <label class="control-label">Name</label>
                     <fieldset class="form-group">
-                        <input asp-for="statusName" class="form-control" />
+                        <input asp-for="StatusName" class="form-control" required />
                     </fieldset>
-                    <span asp-validation-for="statusName" class="text-danger"></span>
+                    <span asp-validation-for="StatusName" class="text-danger"></span>
                 </div>
 
             </div>
@@ -30,9 +30,9 @@
                 <div class="card-body">
                     <label class="control-label">Description</label>
                     <fieldset class="form-group">
-                        <textarea asp-for="statusDescription" rows="3" class="form-control"></textarea>
+                        <textarea asp-for="StatusDescription" rows="3" class="form-control"></textarea>
                     </fieldset>
-                    <span asp-validation-for="statusDescription" class="text-danger"></span>
+                    <span asp-validation-for="StatusDescription" class="text-danger"></span>
                 </div>
 
             </div>

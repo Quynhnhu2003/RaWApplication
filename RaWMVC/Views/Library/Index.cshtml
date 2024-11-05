@@ -1,0 +1,196 @@
+﻿@model List<RaWMVC.Data.Entities.Library>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<main>
+    <div class="profile_content">
+        <div class="subnavigate d-flex">
+            <ul class="ms-5">
+                <li class="active">Current read</li>
+                <li>Reading Lists</li>  
+            </ul>
+        </div>
+        <div id="current_read" class="content_table active main_content">
+            <div class="current_read_container">
+                @if (Model != null && Model.Count > 0)
+                {
+                    @foreach (var library in Model)
+                    {
+                        <div class="current_item me-2">
+                            @if (library != null && library.Story != null)
+                            {
+                                if (library.Story.Medium != null)
+                                {
+                                    <img src="@Url.Content("~/storyImg/" + library.Story.Medium.FileName + "." + library.Story.Medium.Extension)"
+                                         alt=""
+                                         class="w-50 ms-5" />
+                                }
+                                else
+                                {
+                                    <p>No medium available for this story.</p>
+                                }
+
+                                <div class="current_content ms-5 mt-3">
+                                    <p class="current_story_name fs-5">
+                                        @library.Story.StoryTitle
+                                    </p>
+                                    <div class="profile_infor d-flex">
+                                        <div class="reader me-3">
+                                            <i class="fa-solid fa-book-open-reader"></i> 123K
+                                        </div>
+                                        <div class="rate me-3">
+                                            <i class="fa-solid fa-star"></i> 100K
+                                        </div>
+                                        <div class="chapter">
+                                            <i class="fa-solid fa-list-ol"></i> 23
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p>No stories currently being read.</p>
+                }
+
+            </div>
+        </div>
+        <div id="reading_lists" class="content_table main_content">
+            <div class="top_list">
+                <!-- Button trigger modal -->
+                <button type="button"
+                        class="btn_add_new"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal">
+                    New Reading List
+                </button>
+                <!-- Modal -->
+                <div class="modal fade"
+                     id="exampleModal"
+                     tabindex="-1"
+                     aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">
+                                    Add new reading list
+                                </h1>
+                                <button type="button"
+                                        class="btn-close"
+                                        data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="fw-bold fs-6 text">
+                                    Give your Reading List a name. It helps to be specific.
+                                </p>
+                                <input type="text"
+                                       name="listName"
+                                       id="listName"
+                                       class="w-100 p-2"
+                                       required />
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button"
+                                        class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+                                    Close
+                                </button>
+                                <button type="button" class="btn btn-outline-success">
+                                    Create List
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="reading_list_container mt-5">
+                <div class="reading_list_item ps-5 mt-4">
+                    <a href="#" class="d-flex text-dark text-decoration-none">
+                        <img src="~/assets/img/img_cover_Action_and_Adventure.jpg"
+                             alt="" />
+                        <div class="reading_list_infor ms-3">
+                            <p class="fs-5 text fw-bold">List name 1</p>
+                            <span>100</span> stories
+                        </div>
+                    </a>
+                </div>
+                <div class="reading_list_item ps-5 mt-4">
+                    <a href="#" class="d-flex text-dark text-decoration-none">
+                        <img src="~/assets/img/img_cover_Action_and_Adventure.jpg"
+                             alt="" />
+                        <div class="reading_list_infor ms-3">
+                            <p class="fs-5 text fw-bold">List name 2</p>
+                            <span>100</span> stories
+                        </div>
+                    </a>
+                </div>
+                <div class="reading_list_item ps-5 mt-4">
+                    <a href="#" class="d-flex text-dark text-decoration-none">
+                        <img src="~/assets/img/img_cover_Action_and_Adventure.jpg"
+                             alt="" />
+                        <div class="reading_list_infor ms-3">
+                            <p class="fs-5 text fw-bold">List name 3</p>
+                            <span>100</span> stories
+                        </div>
+                    </a>
+                </div>
+                <div class="reading_list_item ps-5 mt-4">
+                    <a href="#" class="d-flex text-dark text-decoration-none">
+                        <img src="~/assets/img/img_cover_Action_and_Adventure.jpg"
+                             alt="" />
+                        <div class="reading_list_infor ms-3">
+                            <p class="fs-5 text fw-bold">List name 4</p>
+                            <span>100</span> stories
+                        </div>
+                    </a>
+                </div>
+                <div class="reading_list_item ps-5 mt-4">
+                    <a href="#" class="d-flex text-dark text-decoration-none">
+                        <img src="~/assets/img/img_cover_Action_and_Adventure.jpg"
+                             alt="" />
+                        <div class="reading_list_infor ms-3">
+                            <p class="fs-5 text fw-bold">List name 5</p>
+                            <span>100</span> stories
+                        </div>
+                    </a>
+                </div>
+                <div class="reading_list_item ps-5 mt-4">
+                    <a href="#" class="d-flex text-dark text-decoration-none">
+                        <img src="~/assets/img/img_cover_Action_and_Adventure.jpg"
+                             alt="" />
+                        <div class="reading_list_infor ms-3">
+                            <p class="fs-5 text fw-bold">List name 6</p>
+                            <span>100</span> stories
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const navItems = document.querySelectorAll(".subnavigate ul li");
+        const contentItems = document.querySelectorAll(".content_table");
+
+        navItems.forEach((item, index) => {
+          item.addEventListener("click", function () {
+            navItems.forEach((navItem) => navItem.classList.remove("active"));
+            contentItems.forEach((contentItem) =>
+              contentItem.classList.remove("active")
+            );
+            item.classList.add("active");
+            contentItems[index].classList.add("active");
+          });
+        });
+      });
+    </script>
+}

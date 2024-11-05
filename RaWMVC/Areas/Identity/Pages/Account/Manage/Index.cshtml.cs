@@ -9,7 +9,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Hosting;
 using RaWMVC.Areas.Identity.Data;
+using RaWMVC.Commons;
 
 namespace RaWMVC.Areas.Identity.Pages.Account.Manage
 {
@@ -17,13 +19,17 @@ namespace RaWMVC.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<RaWMVCUser> _userManager;
         private readonly SignInManager<RaWMVCUser> _signInManager;
+        private readonly IWebHostEnvironment _environment;
+
 
         public IndexModel(
             UserManager<RaWMVCUser> userManager,
-            SignInManager<RaWMVCUser> signInManager)
+            SignInManager<RaWMVCUser> signInManager,
+            IWebHostEnvironment environment)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _environment = environment;
         }
 
         /// <summary>
@@ -56,21 +62,45 @@ namespace RaWMVC.Areas.Identity.Pages.Account.Manage
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
-            [Phone]
-            [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; }
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
+            [Display(Name = "Email")]
+            public string? Email { get; set; }
+            public string? Phonenumber { get; set; }
+            [Display(Name = "Username")]
+            public string Username { get; set; }
+            [Display(Name = "Introduction")]
+            public string Introduction { get; set; }
+            public string ProfilePicture { get; set; }
+            [BindProperty]
+            public IFormFile? ProfilePictureFile { get; set; }
+            public DateOnly? DateOfBirth { get; set; }
         }
 
         private async Task LoadAsync(RaWMVCUser user)
         {
-            var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            var userName = await _userManager.GetUserNameAsync(user);
+            var firstName = user.FirstName;
+            var lastName = user.LastName;
+            var introduction = user.Introduction;
+            var profilePicture = user.ProfilePicture;
+            var dateOfBirth = user.DateOfBirth;
+            
 
             Username = userName;
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                Phonenumber = phoneNumber,
+                Username = userName,
+                FirstName = firstName,
+                LastName = lastName,
+                Introduction = introduction,
+                DateOfBirth = user.DateOfBirth,
+                ProfilePicture = profilePicture
             };
         }
 
@@ -100,20 +130,104 @@ namespace RaWMVC.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
+            if (Input.FirstName != user.FirstName)
             {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
-                if (!setPhoneResult.Succeeded)
+                user.FirstName = Input.FirstName;
+            }
+
+            if (Input.LastName != user.LastName)
+            {
+                user.LastName = Input.LastName;
+            }
+
+            if (Input.Introduction != user.Introduction)
+            {
+                user.Introduction = Input.Introduction;
+            }
+
+            if (Input.DateOfBirth.HasValue)
+            {
+                user.DateOfBirth = Input.DateOfBirth.Value;
+            }
+
+            if (!string.IsNullOrEmpty(Input.Phonenumber) && Input.Phonenumber != user.PhoneNumber)
+            {
+                user.PhoneNumber = Input.Phonenumber;
+            }
+
+            //=== Handling avatar updates ===//
+            if (Request.Form.Files.Count > 0)
+            {
+                IFormFile file = Request.Form.Files.FirstOrDefault();
+                if (file != null)
                 {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
-                    return RedirectToPage();
+                    var profilePicturePath = await SaveProfilePicture(file);
+                    if (!string.IsNullOrEmpty(profilePicturePath))
+                    {
+                        user.ProfilePicture = profilePicturePath;
+                    }
                 }
+            }
+
+            //=== Update all data fields at once ===//
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                await LoadAsync(user);
+                return Page();
             }
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
         }
+
+
+        private async Task<string> SaveProfilePicture(IFormFile? file)
+        {
+            if (file == null || file.Length == 0)
+            {
+                TempData["Message"] = "You must add a profile picture file.";
+                return null;
+            }
+
+            var fileGuidName = Guid.NewGuid().ToString();
+            var fileExtension = Path.GetExtension(file.FileName);
+
+            if (string.IsNullOrEmpty(fileExtension) || !Constants.Valid_Extenstion.Contains(fileExtension.TrimStart('.')))
+            {
+                TempData["Message"] = "Invalid file extension.";
+                return null;
+            }
+
+            var uniqueFileName = $"{fileGuidName}{fileExtension}";
+            var avatarFolder = Path.Combine(_environment.WebRootPath, "avatar");
+
+            if (!Directory.Exists(avatarFolder))
+            {
+                Directory.CreateDirectory(avatarFolder);
+            }
+
+            var filePath = Path.Combine(avatarFolder, uniqueFileName);
+            try
+            {
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                return $"/avatar/{uniqueFileName}";
+            }
+            catch
+            {
+                TempData["Message"] = "An error occurred while saving the profile picture.";
+                return null;
+            }
+        }
+
+
     }
 }

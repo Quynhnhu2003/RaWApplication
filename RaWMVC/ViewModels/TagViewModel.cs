@@ -4,14 +4,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RaWMVC.ViewModels
 {
-    [Bind("tagId, tagName, tagDescription")]
+    [Bind("TagId, TagName, TagDescription")]
     public class TagViewModel
     {
-        public Guid tagId { get; set; }
+        public Guid TagId { get; set; }
         [MaxLength(Constants.MAXLENGTH_EntitiesName)]
-        public string tagName { get; set; }
+        public string TagName { get; set; }
         [MaxLength(Constants.MAXLENGTH_EntitiesDescription)]
-        public string? tagDescription { get; set; }
+        public string? TagDescription { get; set; }
         public int Position { get; set; }
     }
 }

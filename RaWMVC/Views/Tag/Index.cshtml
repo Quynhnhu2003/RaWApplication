@@ -1,27 +1,27 @@
 ﻿@model RaWMVC.ViewModels.TagViewModel
 
 @{
-    ViewData["Title"] = "Status Management";
+    ViewData["Title"] = "Tag Management";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
-    var isCreate = Model == null || Model.tagId == Guid.Empty;
+    var isCreate = Model == null || Model.TagId == Guid.Empty;
     var actionString = isCreate ? "Create" : "Edit";
     var buttonString = isCreate ? "Create" : "Edit";
 }
 
-<h1 class="text-center">Tag Management</h1>
+<h3 class="text-center fw-bold">Tag Management</h3>
 <hr />
 <form asp-action="@actionString" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="tagId" class="form-control" />
+    <input type="hidden" asp-for="TagId" class="form-control" />
     <div class="row">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
                     <label class="control-label">Name</label>
                     <fieldset class="form-group">
-                        <input asp-for="tagName" class="form-control" />
+                        <input asp-for="TagName" class="form-control"  required/>
                     </fieldset>
-                    <span asp-validation-for="tagName" class="text-danger"></span>
+                    <span asp-validation-for="TagName" class="text-danger"></span>
                 </div>
 
             </div>
@@ -30,9 +30,9 @@
                 <div class="card-body">
                     <label class="control-label">Description</label>
                     <fieldset class="form-group">
-                        <textarea asp-for="tagDescription" rows="3" class="form-control"></textarea>
+                        <textarea asp-for="TagDescription" rows="3" class="form-control"></textarea>
                     </fieldset>
-                    <span asp-validation-for="tagDescription" class="text-danger"></span>
+                    <span asp-validation-for="TagDescription" class="text-danger"></span>
                 </div>
 
             </div>
@@ -51,27 +51,6 @@
 
 @section Scripts {
     <script>
-        function getData(page) {
-            console.log("This is page: ", page)
-            $.ajax({
-                type: 'GET',
-                url: "/Tag/GetData",
-                data: {
-                    page
-                },
-                success: function(data) {
-                    var divTagList = document.getElementById("tag-list");
-                    divTagList.innerHTML = data;
-                },
-                error: function(err) {
-
-                },
-                complete: function(e) {
-
-                },
-            })
-        }
-
         function deleteTag(idTag) {
             $.ajax({
                 type: 'POST',
@@ -92,10 +71,11 @@
                 },
             });
         }
-        function ReloadTagList() {
+        function ReloadTagList(currentPage = 1) {
             $.ajax({
-                type: 'POST',
+                type: 'GET',
                 url: "/Tag/ReloadTagList",
+                data: { currentPage },
                 success: function (data) {
                     let divTagList = document.getElementById("tag-list");
                     if (divTagList) {

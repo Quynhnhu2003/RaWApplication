@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaWMVC.Data;
 using RaWMVC.Data.Entities;
@@ -7,7 +8,8 @@ using RaWMVC.ViewModels;
 
 namespace RaWMVC.Controllers
 {
-	public class GenreController : Controller
+    [Authorize(Roles = "Admintrator")]
+    public class GenreController : Controller
 	{
 		private readonly RaWDbContext _context;
         public GenreController(RaWDbContext context)
@@ -25,8 +27,8 @@ namespace RaWMVC.Controllers
 				var countGenre = await _context.Genres.CountAsync();
 				var newGenre = new Genre
 				{
-					genreName = genreVM.genreName.Trim(),
-					genreDescription = genreVM.genreDescription?.Trim(),
+					GenreName = genreVM.GenreName.Trim(),
+					GenreDescription = genreVM.GenreDescription?.Trim(),
 					Position = countGenre + 1,
 				};
 				_context.Genres.Add(newGenre);
@@ -49,12 +51,12 @@ namespace RaWMVC.Controllers
         public async Task<IActionResult> Edit(Guid idGenre)
         {
             var genreVM = await _context.Genres
-                .Where(g => g.genreId.Equals(idGenre))
+                .Where(g => g.GenreId.Equals(idGenre))
                 .Select(a => new GenreViewModel
                 {
-                    genreId = a.genreId,
-                    genreName = a.genreName,
-                    genreDescription = a.genreDescription,
+                    GenreId = a.GenreId,
+                    GenreName = a.GenreName,
+                    GenreDescription = a.GenreDescription,
                 })
                 .SingleOrDefaultAsync();
 
@@ -70,11 +72,11 @@ namespace RaWMVC.Controllers
 		{
 			try
 			{
-				var genre = await _context.Genres.FindAsync(genreVM.genreId);
+				var genre = await _context.Genres.FindAsync(genreVM.GenreId);
 				if (genre == null) return BadRequest();
 
-				genre.genreName = genreVM.genreName.Trim();
-				genre.genreDescription = genreVM.genreDescription?.Trim();
+				genre.GenreName = genreVM.GenreName.Trim();
+				genre.GenreDescription = genreVM.GenreDescription?.Trim();
 
 				await _context.SaveChangesAsync();
 
@@ -99,7 +101,7 @@ namespace RaWMVC.Controllers
             {
                 //=== Predicate/delgate ===//
                 var genre = await _context.Genres
-                    .Where(t => t.genreId.Equals(idGenre))
+                    .Where(t => t.GenreId.Equals(idGenre))
                     .SingleOrDefaultAsync();
 
                 if (genre != null)
@@ -128,10 +130,10 @@ namespace RaWMVC.Controllers
             }
             return Json(new { status, message });
         }
-        public IActionResult ReloadGenreList()
+        public IActionResult ReloadGenreList(int currentPage = 1)
         {
 
-            return ViewComponent(nameof(GenreList));
+            return ViewComponent(nameof(GenreList), new {currentPage});
         }
     }
 }

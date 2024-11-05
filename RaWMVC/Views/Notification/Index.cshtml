@@ -1,0 +1,28 @@
+﻿@model IEnumerable<RaWMVC.Data.Entities.Notification>
+
+@{
+    ViewData["Title"] = "Notifications";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<main class="main_content">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var noti in Model)
+        {
+            <a href="@noti.Link" class="text-decoration-none text-dark">
+                <div class="alert_new_message w-100 d-flex @(!noti.IsRead ? "unread" : "")">
+                    <div class="message ms-5">
+                        <p class="message_info">
+                            <strong>@noti.Message</strong>
+                        </p>
+                        <p class="message_time">
+                            <i class="fa-regular fa-calendar-check"></i> @noti.CreatedDate.ToString("g")
+                        </p>
+                    </div>
+                </div>
+            </a>
+        }
+    }
+</main>
+

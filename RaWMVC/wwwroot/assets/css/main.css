@@ -23,8 +23,8 @@ a {
 }
 /* Header */
 nav {
-  height: 60px;
-  background-color: #1d1f33;
+    height: 60px;
+    background-color: #1d1f33;
 }
 .navbar-brand {
   margin-left: 5%;
@@ -81,7 +81,7 @@ nav {
 }
 /* Footer */
 footer {
-  margin-top: 5%;
+/*  margin-top: 5%;*/
   width: 100%;
   height: 100px;
   background-color: #1d1f33;
@@ -165,6 +165,7 @@ footer {
 /* Index */
 .main_content {
   width: 100%;
+  min-height: 650px;
   margin-top: 5%;
   padding-right: var(--bs-gutter-x, 5%);
   padding-left: var(--bs-gutter-x, 5%);
@@ -519,7 +520,7 @@ footer {
   opacity: 0;
   animation: animate 1s ease-in-out 0.3s 1 forwards;
 }
-.content button {
+.content a {
   padding: 10px 20px;
   border: none;
   cursor: pointer;
@@ -551,7 +552,7 @@ footer {
   border: none;
   cursor: pointer;
   margin: 0 5px;
-  border: 1px solid #000;
+  /*border: 1px solid #000;*/
   transition: 0.3s;
 }
 .button button:hover {
@@ -874,6 +875,7 @@ footer {
 }
 .story_item_content {
   margin-left: 5%;
+  width: 100%;
 }
 .profile_item img {
   margin-left: 5%;
@@ -919,7 +921,7 @@ footer {
 }
 .coins_user {
   position: absolute;
-  top: 40%;
+  top: 37%;
   right: 5%;
 }
 .coins_number {
@@ -1407,4 +1409,22 @@ footer {
 }
 .reading_list_item img {
   width: 10%;
+}
+.link_signup {
+    background-color: #ffff;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(238, 104, 88, 1);
+    text-decoration: none;
+    width: 185px;
+    height: 55px;
+    border-radius: 50px;
+    font-weight: 600;
+}
+.link_signup:hover {
+    background-color: rgba(238, 104, 88, 1);
+    color: #fff;
+    transition: 0.5s ease-in-out;
 }

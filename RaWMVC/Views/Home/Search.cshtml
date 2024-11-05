@@ -1,0 +1,25 @@
+﻿@model List<RaWMVC.ViewModels.StoryViewModel>
+
+@{
+    ViewData["Title"] = "Search Results";
+    string searchString = ViewData["SearchString"] as string;
+}
+
+<h2>Search Results for "@searchString"</h2>
+
+@if (Model.Any())
+{
+    <ul class="list-group">
+        @foreach (var story in Model)
+        {
+            <li class="list-group-item">
+                <strong>@story.StoryTitle</strong> - @story.TagName
+                <p>@story.StoryDescription</p>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No results found for "@searchString".</p>
+}

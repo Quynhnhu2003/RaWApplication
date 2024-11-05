@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaWMVC.Commons;
 using RaWMVC.Data;
 using RaWMVC.Data.Entities;
+using RaWMVC.ViewModels;
 
 namespace RaWMVC.ViewComponents
 {
@@ -14,51 +14,43 @@ namespace RaWMVC.ViewComponents
         {
             _context = context;
         }
-        public async Task<IViewComponentResult> InvokeAsync(int page = 1)
+
+        public async Task<IViewComponentResult> InvokeAsync(int currentPage = 1)
         {
-            //var item = await GetItemsAsync(page);
-			var skip = (page - 1) * Constants.TAKE;
+			//để lấy dữ liệu ra từ Be đến Fe thì dùng ViewBag
+			ViewBag.CurrentPage = currentPage;
 
-			ViewBag.Page = page;
-            var listTag = await _context.Tags
-                .ToListAsync();
+			var take = Constants.TAKE;
+			var skip = (currentPage - 1) * take;
 
-            if (listTag != null && listTag.Count > 0) {
-				//=== 101 item (10 item/page) ===//
-				//var total = listTag.Count;
-				//var maxPage = 0;
-				//if (total % Constants.TAKE == 0)
-				//{
-				//	maxPage = total / Constants.TAKE;
-				//}
-				//else
-				//{
-				//	maxPage = (total / Constants.TAKE) + 1;
-				//}
-				//ViewBag.MaxPage = maxPage;
+			var musicList = await _context.Tags
+				 .ToListAsync();
 
-				ViewBag.MaxPage = (listTag.Count % Constants.TAKE == 0) 
-                    ? listTag.Count / Constants.TAKE
-					: listTag.Count / Constants.TAKE + 1;
-				var itemsPaged = listTag
-					.OrderBy(t => t.Position)
-					.Skip(skip)
-					.Take(Constants.TAKE)
-					.ToList();
-				return View(itemsPaged);
-			}
-            return View();
-        }
+			if (musicList != null && musicList.Count > 0)
+			{
+				var tempNumber = musicList.Count / take;
+				ViewBag.MaxPage = (musicList.Count % take == 0) ? tempNumber : tempNumber + 1;
+			};
 
-        private Task<List<Tag>> GetItemsAsync(int page = 1)
+			var item = musicList
+				.OrderBy(m => m.Position)
+				.Select(m => new TagViewModel
+				{
+					TagId = m.TagId,
+					TagName = m.TagName,
+					TagDescription = m.TagDescription,
+					Position = m.Position,
+				})
+				.Skip(skip) //hàm Skip của Linq dùng để tính phần tử bỏ qua
+				.Take(take) // hàm Take của Linq dùng để tính số phần tử cần lấy cho mỗi trang
+				.ToList();
+
+			return View(item);
+		}
+
+        private Task<List<Tag>> GetItemAsync()
         {
-            var skip = (page - 1) * Constants.TAKE;
-
-            return _context.Tags
-                .OrderBy(t => t.Position)
-                .Skip(skip)
-                .Take(Constants.TAKE)
-                .ToListAsync();
+            return _context.Tags.ToListAsync();
         }
     }
 }

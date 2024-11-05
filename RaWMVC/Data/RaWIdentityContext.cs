@@ -1,29 +1,31 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using RaW.MVC.Data.Configurations;
 using RaWMVC.Areas.Identity.Data;
+using RaWMVC.Data.Entities;
 
-namespace RaWMVC.Data;
-
-public class RaWIdentityContext : IdentityDbContext<RaWMVCUser>
+namespace RaWMVC.Data
 {
-	public RaWIdentityContext(DbContextOptions<RaWIdentityContext> options)
-		: base(options)
-	{
-	}
+    public class RaWIdentityContext : IdentityDbContext<RaWMVCUser, RaWMVCRole, string, IdentityUserClaim<string>, IdentityUserRole<string>,
+        IdentityUserLogin<string>, IdentityRoleClaim<string>, IdentityUserToken<string>>
+    {
+        public RaWIdentityContext(DbContextOptions<RaWIdentityContext> options)
+            : base(options)
+        {
+        }
 
-	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-	{
-		var connectionString = "Server=LAPTOP-M2M74TDG\\SQLEXPRESS;Database=RaWIdentityContext;User Id=itsjuneka; password=Quynhnhu@14; TrustServerCertificate=True; Trusted_Connection=False; MultipleActiveResultSets=true;";
-		optionsBuilder.UseSqlServer(connectionString);
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            var connectionString = "Server=QUYNHNHU;Database=RaWIdentityContext;User Id=itsjuneka; password=Quynhnhu@14; TrustServerCertificate=True; Trusted_Connection=False; MultipleActiveResultSets=true;";
+            optionsBuilder.UseSqlServer(connectionString);
+        }
 
-	}
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+        }
 
-	protected override void OnModelCreating(ModelBuilder builder)
-	{
-		base.OnModelCreating(builder);
-		// Customize the ASP.NET Identity model and override the defaults if needed.
-		// For example, you can rename the ASP.NET Identity table names and more.
-		// Add your customizations after calling base.OnModelCreating(builder);
-	}
+        public DbSet<RaWMVCRole> Role { get; set; }
+    }
 }

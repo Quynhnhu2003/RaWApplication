@@ -4,11 +4,12 @@
     {
         public Tag()
         {
-            tagId = Guid.NewGuid();
+            TagId = Guid.NewGuid();
         }
-        public Guid tagId { get; set; }
-        public string tagName { get; set; }
-        public string tagDescription { get; set; }
+        public Guid TagId { get; set; }
+        public string TagName { get; set; }
+        public string TagDescription { get; set; }
         public int Position { get; set; }
+
     }
 }

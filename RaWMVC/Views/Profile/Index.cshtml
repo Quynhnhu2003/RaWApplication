@@ -1,0 +1,415 @@
+﻿@model RaWMVC.ViewModels.ProfileViewModel
+
+@{
+    ViewData["Title"] = "Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<main class="main_container">
+    <div class="top_profile d-flex">
+        <img class="user_img rounded-circle"
+             src="@Url.Content(Model.AvatarUrl)"
+             alt="" />
+        <div class="user_infor w-25">
+            <h3>@Model.UserName</h3>
+            <div class="setting_profile d-flex justify-content-between">
+                <div class="setting_profile_left">
+                    <p class="mt-3"><span>@Model.UserName</span></p>
+                </div>
+                <div class="more_infor_left">
+                    @if (Model.IsFollowing)
+                    {
+                        <button type="button" class="btn_follow mt-3" onclick="toggleFollow('@Model.UserId', true)">
+                            Unfollow
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn_follow mt-3" onclick="toggleFollow('@Model.UserId', false)">
+                            Follow
+                        </button>
+                    }
+                </div>
+            </div>
+            <div class="more_infor_user d-flex justify-content-between">
+                <p class="conversation">
+                    <span>0</span>
+                    Post
+                </p>
+                <p class="list">
+                    <span>@Model.ReadingListCount</span>
+                    Reading Lists
+                </p>
+                <p class="follower">
+                    <span>@Model.FollowersCount</span>
+                    Followers
+                </p>
+            </div>
+        </div>
+        <div class="coins_user d-flex">
+            <div class="coins_number fs-5 text text-center">
+                <a href="~/Identity/Account/Manage/Index"
+                   class="btn">
+                    Edit profile
+                </a>
+            </div>
+            <div class="coins_add">
+                <a class="text-dark" href="~/Identity/Account/Manage/Index">
+                    <i class="fa-solid fa-gear"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="profile_content">
+        <div class="subnavigate_profile d-flex">
+            <ul class="ms-5">
+                <li class="active">About me</li>
+                <li>Conversation</li>
+                <li>Following</li>
+                <li>Reading Lists</li>
+            </ul>
+        </div>
+
+        <div id="about_me" class="content_table active main_content">
+            <div class="row">
+                <div class="col-4 infor_user shadow p-3 mb-5 bg-body-tertiary rounded">
+                    <h4 class="fw-bold">Introduction</h4>
+                    <div class="introduction">
+                        <p class="text-center">
+                            @Model.Introduction
+                        </p>
+                    </div>
+                    <h4 class="fw-bold mt-2">Joined</h4>
+                    <div class="joined text-center">
+                        <p>@Model.JoinedDate.ToString("MM - dd - yyyy")</p>
+                    </div>
+                    <h4 class="fw-bold mt-2">Following</h4>
+                    <div class="following d-flex flex-wrap">
+                        @* Add following users here *@
+                    </div>
+                    <h4 class="fw-bold mt-2">Share</h4>
+                    <div class="share justify-content-evenly mb-3">
+                        <i class="fa-brands fa-square-facebook"
+                           style="color: #ffd43b"></i>
+                        <i class="fa-brands fa-square-x-twitter"
+                           style="color: #ffd43b"></i>
+                        <i class="fa-brands fa-square-instagram"
+                           style="color: #ffd43b"></i>
+                    </div>
+                </div>
+                <div class="ms-5 col-7 border p-3 mb-5 bg-body-tertiary rounded">
+                    <h4 class="fw-bold">Story currently being read</h4>
+                    <div class="list_current_story mt-4 d-flex flex-wrap justify-content-between">
+                        @if (Model.CurrentReadingStories != null && Model.CurrentReadingStories.Any())
+                        {
+                            @foreach (var story in Model.CurrentReadingStories)
+                            {
+                                if (story != null && story.StoryId != Guid.Empty) // Kiểm tra story và story.StoryId
+                                {
+                                    <a href="@Url.Action("Detail", "Story", new { idStory = story.StoryId })" class="text-dark text-decoration-none current_item">
+                                        <div class="">
+                                            @if (story.Media != null) // Kiểm tra story.Media
+                                            {
+                                                <img src="@Url.Content("~/storyImg/" + story.Media.FileName + "." + story.Media.Extension)" alt="" />
+                                            }
+                                            else
+                                            {
+                                                <img src="@Url.Content("~/storyImg/default.jpg")" alt="No image available" />
+                                            }
+
+                                            <div class="current_content">
+                                                <p class="current_story_name w-auto">
+                                                    @story.StoryTitle
+                                                </p>
+                                                <div class="profile_infor d-flex">
+                                                    <div class="reader me-2">
+                                                        <i class="fa-solid fa-book-open-reader"></i> 2K
+                                                    </div>
+                                                    <div class="rate me-2">
+                                                        <i class="fa-solid fa-star"></i>200
+                                                    </div>
+                                                    <div class="chapter">
+                                                        <i class="fa-solid fa-list-ol"></i> 35
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <p>You have no story.</p>
+                        }
+                    </div>
+                </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div id="conversation" class="content_table main_content">
+            <div class="post-form shadow p-3 mb-5 bg-body-tertiary rounded d-flex">
+                <div class="d-flex align-items-center mb-3 w-75">
+                    <input asp-for="@Model.PostId" hidden  />
+                    <img src="@Model.AvatarUrl" alt="User" style="width: 45px; height: 45px;" class="rounded-circle me-3">
+                    <textarea class="form-control" placeholder="what are you thinking?" rows="1" required></textarea>
+                </div>
+                <div class="icon-buttons ms-3">
+                <button class="btn btn-primary ms-2 mt-1 text-dark" type="button" onclick="creaetPost();">Posting</button>
+                </div>
+            </div>
+            @if(Model.Posts != null)
+            {
+                foreach(var post in Model.Posts)
+                {
+                    <div class="shadow p-3 mb-5 rounded container comment-section">
+                        <div class="container comment-section">
+                            <!-- Original Comment -->
+                            <div class="comment">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <img src="@post.ProfilePicture" alt="User" style="width: 45px; height: 45px;" class="rounded-circle me-2">
+                                        <span class="username me-3">@post.Username</span> -
+                                        <small class="timestamp ms-3">@post.CreateOn.ToString("dd-MM-yyyy HH:mm:ss")</small>
+                                        <p class="content">@post.PostContent</p>
+                                    </div>
+                                    <div class="btn-group h-50 d-flex text-center justify-content-center align-middle">
+                                        <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fa-solid fa-ellipsis-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <button onclick="deletePost('@post.PostId')" class="btn">Delete</button>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Replies -->
+                        @if (post.Replies != null)
+                        {
+                            foreach (var reply in post.Replies)
+                            {
+                                <div class="comment reply">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <img src="@reply.ProfilePicture" alt="User" style="width: 45px; height: 45px;" class="rounded-circle me-2">
+                                            <span class="username">@reply.Username</span> -
+                                            <small class="timestamp">@reply.CreateAt.ToString("dd-MM-yyyy HH:mm:ss")</small>
+                                            <p class="content">@reply.ReplyContent</p>
+                                        </div>
+                                        <div class="btn-group h-50 d-flex text-center justify-content-center align-middle">
+                                            <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <button onclick="deleteComment('@reply.PostId', '@reply.ReplyId')" class="btn">Delete</button>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        <!-- Reply Input -->
+                        <form asp-action="CreateComment" asp-controller="Post" method="post">
+                            <div class="reply-input">
+                                <input type="hidden" id="postId" name="postId" value="@post.PostId" />
+                                <textarea class="form-control" rows="1" name="content" placeholder="Write a reply..."></textarea>
+                                <button class="ms-4 btn btn-outline-secondary" type="submit">
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        <div id="following" class="content_table main_content">
+            <div class="shadow p-3 mb-5 bg-body-tertiary rounded">
+                <h4 class="fw-bold">Following</h4>
+                @Html.Partial("_FollowList", Model.Follows)
+            </div>
+        </div>
+        <div id="reading_lists" class="content_table main_content">
+            <div class="shadow p-3 mb-5 bg-body-tertiary rounded">
+                <div class="top_page d-flex justify-content-between">
+                    <h4 class="fw-bold">Reading Lists</h4>
+                    <button type="button" class="btn" 
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                        onclick="modalShowCreateReadingList()">
+                            <i class="fa-solid fa-circle-plus fs-5 text"></i>
+                    </button>
+                </div>
+                <div class="reading_list_container">
+                    @if (Model.ReadingLists != null && Model.ReadingLists.Any())
+                    {
+                        foreach (var list in Model.ReadingLists)
+                        {
+                            <div class="reading_list_item ps-5 mt-4">
+                                <a href="@Url.Action("ListStory", "ReadingList", new { idReadingList = list.ReadingListsId })" class="d-flex text-dark text-decoration-none">
+                                    <img src="~/assets/img/booklist.jpg" />
+                                    <div class="reading_list_infor ms-3">
+                                        <p class="fs-5 text fw-bold">@list.Name</p>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p>You have no reading lists.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const navItems = document.querySelectorAll(
+                ".subnavigate_profile ul li"
+            );
+            const contentItems = document.querySelectorAll(".content_table");
+
+            navItems.forEach((item, index) => {
+                item.addEventListener("click", function () {
+                    navItems.forEach((navItem) => navItem.classList.remove("active"));
+                    contentItems.forEach((contentItem) =>
+                        contentItem.classList.remove("active")
+                    );
+                    item.classList.add("active");
+                    contentItems[index].classList.add("active");
+                });
+            });
+        });
+
+        //=== Create Reading List ===//
+        function modalShowCreateReadingList() {
+            $.ajax({
+                type: "GET",
+                url: "/ReadingList/Create",
+                success: function (data) {
+                    openModal(data, modalSize.large); // Mở modal với dữ liệu trả về
+                },
+                error: function (err) {
+                    console.error(err);
+                }
+            });
+        }
+
+        function createReadingList() {
+            let formData = new FormData();
+            formData.append("Name", document.getElementById("readingListName").value);
+
+            $.ajax({
+                type: "POST",
+                url: "/ReadingList/Create",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (data.success) {
+                        $('#addReadingListModal').modal('hide');
+                        alert("Reading List added to your library!");
+                        window.location.reload();
+                    } else {
+                        alert(data.message);
+                        document.getElementById("errorMessage").innerText = data.message;
+                    }
+                },
+                error: function (err) {
+                    if (err.status === 500) {
+                        alert("This reading list is already in your library.");
+                    } else {
+                        alert("Failed to add the reading list.");
+                    }
+                }
+            });
+        }
+
+        //=== Follow function ===//
+        function toggleFollow(followeeId) {
+            $.ajax({
+                type: "POST",
+                url: "/Follow/ToggleFollow",
+                data: {
+                    followeeId: followeeId
+                },
+                success: function (data) {
+                    alert("You are now following this user.");
+                    window.location.reload();
+                },
+                error: function (err) {
+                    console.log("Error: ", err)
+                    alert("You can not to follow your account.");
+                }
+            });
+        }
+
+        //=== Create Post ===//
+        function creaetPost() {
+            const content = document.querySelector(".post-form textarea").value;
+            if (content.trim() === "") {
+                alert("Post content cannot be empty.");
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/Post/Create",
+                data: { content: content },
+                success: function (response) {
+                    alert("The Post have been posted in your profile");
+                    window.location.reload();
+                },
+                error: function () {
+                    alert("An error occurred. Please try again.");
+                }
+            });
+
+        }
+        //=== Delete Post ===//
+        function deletePost(idPost) {
+            $.ajax({
+                type: "POST",
+                url: "/Post/Delete",
+                data: { idPost },
+                success: function (response) {
+                    alert("The post has been deleted successfully.");
+                    window.location.reload();
+                },
+                error: function () {
+                    alert("An error occurred. Please try again.");
+                }
+            });
+        }
+        //=== Delete Comment ===//
+        function deleteComment(idPost, idReply) {
+            $.ajax({
+                type: 'POST',
+                url: "/Post/DeleteComment",
+                data: {
+                    idPost: idPost,
+                    idReply: idReply
+                },
+                success: function (response) {
+                    if (response.status) {
+                        alert(response.message);
+                    }
+                    else {
+                        alert(response.message);
+                    }
+                    window.location.reload();
+                },
+                error: function () {
+                    alert("An error occurred while deleting the comment.");
+                }
+            });
+        }
+    </script>
+}

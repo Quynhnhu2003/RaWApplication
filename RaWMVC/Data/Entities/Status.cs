@@ -4,11 +4,11 @@
     {
         public Status()
         {
-            statusId = Guid.NewGuid();
+            StatusId = Guid.NewGuid();
         }
-        public Guid statusId { get; set; }
-        public string statusName { get; set; }
-        public string? statusDescription { get; set; }
+        public Guid StatusId { get; set; }
+        public string StatusName { get; set; }
+        public string? StatusDescription { get; set; }
         public int Position { get; set; }
     }
 }

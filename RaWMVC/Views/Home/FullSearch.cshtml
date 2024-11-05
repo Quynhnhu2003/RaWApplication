@@ -1,0 +1,173 @@
+﻿@model RaWMVC.ViewModels.SearchViewModel
+
+@{
+    ViewData["Title"] = "Search Result";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    string searchString = ViewData["SearchString"] as string;
+    int searchCount = @Model.Stories.Count + @Model.Users.Count;
+}
+
+<main class="main_content">
+    <div class="search_container">
+        <div class="top_search">
+            <div class="subnavigate d-flex">
+                <ul class="col-4">
+                    <li class="active">Story</li>
+                    <li>Profile</li>
+                </ul>
+            </div>
+            <meta name="csrf-token" content="@Html.AntiForgeryToken().ToString()" />
+            <div class="story_result d-flex mt-3">
+                <p class="fw-bold me-2">Search result for “@searchString”</p>
+                <span>-</span>
+                <p class="ms-2">@searchCount results</p>
+            </div>
+
+            <!-- Story Results -->
+            <div id="story" class="content_table active">
+                <div class="row">
+                    <div class="col-3">
+                            <div class="story_left">
+                                <ul>
+                                    <li>
+                                        <p class="fs-5 text fw-bold mt-4">Length</p>
+
+                                        <ul id="chapterCount" class="submenu_filter">
+                                            <li>
+                                                <input type="checkbox" name="lengthFilter" value="1" />
+                                                1 - 20 Parts
+                                            </li>
+                                            <li>
+                                                <input type="checkbox" name="lengthFilter" value="2" />
+                                                20 - 40 Parts
+                                            </li>
+                                            <li>
+                                                <input type="checkbox" name="lengthFilter" value="3" /> 40 Parts or
+                                                more
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <p class="fs-5 text fw-bold mt-4">Updated</p>
+                                        <ul class="submenu_filter">
+                                            <li>
+                                                <input type="checkbox" name="updatedFilter" value="any" checked /> Any time
+                                            </li>
+                                            <li><input type="checkbox" name="updatedFilter" value="today" /> Today</li>
+                                            <li>
+                                                <input type="checkbox" name="updatedFilter" value="week" /> This week
+                                            </li>
+                                            <li>
+                                                <input type="checkbox" name="updatedFilter" value="month" /> This month
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <p class="fs-5 text fw-bold mt-4">Status</p>
+                                        <ul class="submenu_filter">
+                                            <li>
+                                                <input type="checkbox" name="completed" value="true" />
+                                                Completed
+                                            </li>
+                                            <li>
+                                                <input type="checkbox" name="hideMature" value="true" />
+                                                Ongoing
+                                            </li>
+                                            <li>
+                                                <input type="checkbox" name="hideFree" value="true" />
+                                                Mature
+                                            </li>
+                                            <li>
+                                                <input type="checkbox" name="hideFree" value="true" />
+                                                Dropped
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button class="btn btn-outline-success" type="button" onclick="filterStory()">
+                                        Filter
+                                    </button>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="col-8">
+                        <div class="story_right" id="resultStory">
+                            
+                            @if (Model.Stories.Any())
+                            {
+                                @foreach (var story in Model.Stories)
+                                {
+                                    <a href="@Url.Action("Detail", "Story", new { idStory = story.StoryId })" class="text-decoration-none text-dark">
+                                        <div class="story_item w-100 bg-body p-4 d-flex w-75">
+                                            <img src="@Url.Content("~/storyImg/" + story.Medium.FileName+ "." + story.Medium.Extension)" alt="" />
+                                            <div class="story_item_content">
+                                                <h3>@story.StoryTitle</h3>
+                                                <p class="mt-3"><span>@story.Username</span></p>
+                                                <div class="more_infor d-flex justify-content-between">
+                                                    <div class="more_infor_right d-flex">
+                                                        <div class="reader me-2">
+                                                            <i class="fa-solid fa-book-open-reader"></i> 123K
+                                                        </div>
+                                                        <div class="rate me-2">
+                                                            <i class="fa-solid fa-star"></i> 100K
+                                                        </div>
+                                                        <div class="chapter">
+                                                            <i class="fa-solid fa-list-ol"></i> 23
+                                                        </div>
+                                                    </div>
+                                                    <div class="more_infor_left">
+                                                        <p class="bg-success text-white rounded-pill">@story.StatusName</p>
+                                                    </div>
+                                                </div>
+                                                <p class="fs-6 story_item_description">@story.StoryDescription</p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                }
+                            }
+                            else
+                            {
+                                <p>No story results found for "@searchString".</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Results -->
+            <div id="profile" class="content_table">
+                @if (Model.Users.Any())
+                {
+                    @foreach (var user in Model.Users)
+                    {
+                        <a class="text-decoration-none text-dark" href="~/Profile/Index?userId=@user.Id">
+                            <div class="profile_item bg-body p-4 w-75">
+                                    <img src="@Url.Content(user.ProfilePicture)" alt="" />
+                                <div class="profile_item_content w-50">
+                                    <h3>@user.Username</h3>
+                                    <div class="more_infor d-flex justify-content-between">
+                                        <div class="more_infor_right d-flex">
+                                            <p class="mt-3"><span>@user.Username</span></p>
+                                        </div>
+                                    </div>
+                                
+                                </div>
+                            </div>
+                        </a>
+                    }
+                }
+                else
+                {
+                    <p>No profile results found for "@searchString".</p>
+                }
+            </div>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <script>
+    </script>
+}

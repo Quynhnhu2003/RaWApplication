@@ -1,27 +1,29 @@
 ﻿@model RaWMVC.ViewModels.GenreViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Genre Management";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
-    var isCreate = Model == null || Model.genreId == Guid.Empty;
+    var isCreate = Model == null || Model.GenreId == Guid.Empty;
     var actionString = isCreate ? "Create" : "Edit";
     var buttonString = isCreate ? "Create" : "Edit";
 }
 
-<h1 class="text-center">Genre Management</h1>
+<h3 class="text-center fw-bold">Genre Management</h3>
 <hr />
 <form asp-action="@actionString" enctype="multipart/form-data">
+    <div class="text-success text-uppercase fs-3">@TempData["Message"] </div>
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <input type="hidden" asp-for="genreId" class="form-control" />
+    <input type="hidden" asp-for="GenreId" class="form-control" />
+    
     <div class="row">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-body">
                     <label class="control-label">Name</label>
                     <fieldset class="form-group">
-                        <input asp-for="genreName" class="form-control" />
+                        <input asp-for="GenreName" class="form-control" required />
                     </fieldset>
-                    <span asp-validation-for="genreName" class="text-danger"></span>
+                    <span asp-validation-for="GenreName" class="text-danger"></span>
                 </div>
 
             </div>
@@ -30,9 +32,9 @@
                 <div class="card-body">
                     <label class="control-label">Description</label>
                     <fieldset class="form-group">
-                        <textarea asp-for="genreDescription" rows="3" class="form-control"></textarea>
+                        <textarea asp-for="GenreDescription" rows="3" class="form-control"></textarea>
                     </fieldset>
-                    <span asp-validation-for="genreDescription" class="text-danger"></span>
+                    <span asp-validation-for="GenreDescription" class="text-danger"></span>
                 </div>
 
             </div>
@@ -71,10 +73,11 @@
                 },
             });
         }
-        function ReloadGenreList() {
+        function ReloadGenreList(currentPage = 1) {
             $.ajax({
                 type: 'POST',
                 url: "/Genre/ReloadGenreList",
+                data: { currentPage },
                 success: function (data) {
                     let divGenreList = document.getElementById("genre-list");
                     if (divGenreList) {

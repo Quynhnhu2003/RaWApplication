@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol.Plugins;
 using RaWMVC.Data;
@@ -8,6 +9,7 @@ using RaWMVC.ViewModels;
 
 namespace RaWMVC.Controllers
 {
+    [Authorize(Roles = "Admintrator")]
     public class StatusController : Controller
     {
         private readonly RaWDbContext _context;
@@ -26,8 +28,8 @@ namespace RaWMVC.Controllers
                 var countStatus = await _context.Status.CountAsync();
                 var newSttaus = new Status
                 {
-                    statusName = statusVM.statusName.Trim(),
-                    statusDescription = statusVM.statusDescription?.Trim(),
+                    StatusName = statusVM.StatusName.Trim(),
+                    StatusDescription = statusVM.StatusDescription?.Trim(),
                     Position = countStatus + 1,
                 };
                 //=== The status has just been added to the database ===//
@@ -53,12 +55,12 @@ namespace RaWMVC.Controllers
         public async Task<IActionResult> Edit (Guid idStatus)
         {
             var statusVM = await _context.Status
-                .Where(s => s.statusId.Equals(idStatus))
+                .Where(s => s.StatusId.Equals(idStatus))
                 .Select(a => new StatusViewModel
                 {
-                    statusId = a.statusId,
-                    statusName = a.statusName,
-                    statusDescription = a.statusDescription,
+                    StatusId = a.StatusId,
+                    StatusName = a.StatusName,
+                    StatusDescription = a.StatusDescription,
                 })
                 .SingleOrDefaultAsync();
 
@@ -73,11 +75,11 @@ namespace RaWMVC.Controllers
         {
             try
             {
-                var status = await _context.Status.FindAsync(statusVM.statusId);
+                var status = await _context.Status.FindAsync(statusVM.StatusId);
                 if (status == null) return BadRequest();
 
-                status.statusName = statusVM.statusName.Trim();
-                status.statusDescription = statusVM.statusDescription?.Trim();
+                status.StatusName = statusVM.StatusName.Trim();
+                status.StatusDescription = statusVM.StatusDescription?.Trim();
 
                 await _context.SaveChangesAsync();
 
@@ -103,7 +105,7 @@ namespace RaWMVC.Controllers
             {
                 //=== Predicate/delgate ===//
                 var statusVM = await _context.Status
-                    .Where(t => t.statusId.Equals(idStatus))
+                    .Where(t => t.StatusId.Equals(idStatus))
                     .SingleOrDefaultAsync();
 
                 if (statusVM != null)

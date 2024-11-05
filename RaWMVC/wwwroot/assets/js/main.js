@@ -61,11 +61,22 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 });
-// Chat section
-document
-  .querySelector(".chat[data-chat='person2']")
-  .classList.add("active-chat");
-document.querySelector(".person[data-chat='person2']").classList.add("active");
+// Chat section (Canh sua ngay 27/7)
+//document
+//  .querySelector(".chat[data-chat='person2']")
+//  .classList.add("active-chat");
+//document.querySelector(".person[data-chat='person2']").classList.add("active");
+let chatPerson2 = document
+    .querySelector(".chat[data-chat='person2']");
+if (chatPerson2) {
+    chatPerson2.classList.add("active-chat");
+}
+
+let personPerson2 = document.querySelector(".person[data-chat='person2']");
+if (personPerson2) {
+    personPerson2.classList.add("active");
+}
+
 
 let friends = {
   list: document.querySelector("ul.people"),
@@ -142,3 +153,22 @@ function openNav() {
 function closeNav() {
   document.getElementById("mySidenav").style.display = "none";
 }
+
+//=== Change Tag Search ===//
+document.addEventListener("DOMContentLoaded", function () {
+    const navItems = document.querySelectorAll(".subnavigate ul li");
+    const contentItems = document.querySelectorAll(".content_table");
+
+    navItems.forEach((item, index) => {
+        item.addEventListener("click", function () {
+            navItems.forEach((navItem) => navItem.classList.remove("active"));
+            contentItems.forEach((contentItem) =>
+                contentItem.classList.remove("active")
+            );
+            item.classList.add("active");
+            if (contentItems) {
+                contentItems[index].classList.add("active");
+            }
+        });
+    });
+});

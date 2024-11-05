@@ -21,13 +21,13 @@
 								{
 									<tr>
 										<th scope="row">@status.Position</th>
-										<td>@status.statusName</td>
-										<td>@status.statusDescription</td>
+										<td>@status.StatusName</td>
+										<td>@status.StatusDescription</td>
 										<td>
-											<a class="fs-4" href="~/Status/Edit/?idStatus=@status.statusId">
+											<a class="fs-4 btn btn-outline-primary" href="~/Status/Edit/?idStatus=@status.StatusId">
 												<i class="fa-solid fa-file-pen"></i>
 											</a>
-											<a class="fs-4" onclick="deleteStatus('@status.statusId')">
+											<a class="fs-4 btn btn-outline-danger" onclick="deleteStatus('@status.StatusId')">
 												<i class="fa-solid fa-eraser"></i>
 											</a>
 										</td>

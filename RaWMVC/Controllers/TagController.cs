@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using RaWMVC.Data;
@@ -8,6 +9,7 @@ using RaWMVC.ViewModels;
 
 namespace RaWMVC.Controllers
 {
+    [Authorize(Roles = "Admintrator")]
     public class TagController : Controller
     {
         private readonly RaWDbContext _context;
@@ -27,11 +29,24 @@ namespace RaWMVC.Controllers
         {
             try
             {
-                var countTag = await _context.Tags.CountAsync();
+				var existingTag = await _context.Tags
+										.FirstOrDefaultAsync(t => t.TagName == tagVM.TagName.Trim());
+				if (existingTag != null)
+				{
+					//=== If the tag already exists, display an error message ===//
+					TempData["Message"] = "Tag name already exists.";
+
+					//=== Return the view with the existing data to allow the user to correct it ===//
+					return RedirectToAction(nameof(Index));
+				}
+
+
+				var countTag = await _context.Tags.CountAsync();
+               
                 var newTag = new Tag
                 {
-                    tagName = tagVM.tagName.Trim(),
-                    tagDescription = tagVM.tagDescription?.Trim(),
+                    TagName = tagVM.TagName.Trim(),
+                    TagDescription = tagVM.TagDescription?.Trim(),
                     Position = countTag + 1
                 };
                 //=== The tag has just been added to the database ===//
@@ -58,12 +73,12 @@ namespace RaWMVC.Controllers
 		public async Task<IActionResult> Edit(Guid idTag)
 		{
 			var tagVM = await _context.Tags
-				.Where(s => s.tagId.Equals(idTag))
+				.Where(s => s.TagId.Equals(idTag))
 				.Select(a => new TagViewModel
 				{
-					tagId = a.tagId,
-					tagName = a.tagName,
-					tagDescription = a.tagDescription,
+					TagId = a.TagId,
+					TagName = a.TagName,
+					TagDescription = a.TagDescription,
 				})
 				.SingleOrDefaultAsync();
 
@@ -79,11 +94,11 @@ namespace RaWMVC.Controllers
 		{
 			try
 			{
-				var tag = await _context.Tags.FindAsync(tagVM.tagId);
+				var tag = await _context.Tags.FindAsync(tagVM.TagId);
 				if (tag == null) return BadRequest();
 
-				tag.tagName = tagVM.tagName.Trim();
-				tag.tagDescription = tagVM.tagDescription?.Trim();
+				tag.TagName = tagVM.TagName.Trim();
+				tag.TagDescription = tagVM.TagDescription?.Trim();
 
 				await _context.SaveChangesAsync();
 
@@ -99,11 +114,6 @@ namespace RaWMVC.Controllers
 			}
 		}
 
-		public IActionResult GetData(int page = 1) 
-        { 
-            return ViewComponent("TagList", page); 
-        }
-
         // POST: ArtistController/Delete/5
         [HttpPost]
         public async Task<ActionResult> Delete(Guid idTag)
@@ -114,7 +124,7 @@ namespace RaWMVC.Controllers
             {
                 //=== Predicate/delgate ===//
                 var tag = await _context.Tags
-                    .Where(t => t.tagId.Equals(idTag))
+                    .Where(t => t.TagId.Equals(idTag))
                     .SingleOrDefaultAsync();
 
                 if (tag != null)
@@ -143,10 +153,9 @@ namespace RaWMVC.Controllers
             }
             return Json(new { status, message });
         }
-        public IActionResult ReloadTagList()
+        public IActionResult ReloadTagList(int currentPage = 1)
         {
-
-            return ViewComponent(nameof(TagList));
+            return ViewComponent(nameof(TagList), new { currentPage });
         }
     }
 }

@@ -1,11 +1,10 @@
-﻿@model List<RaWMVC.Data.Entities.Tag>
+﻿@model List<RaWMVC.ViewModels.TagViewModel>
+
 @{
-	var page = (int)ViewBag.Page;
+	var currentPage = (int)ViewBag.CurrentPage;
 	var maxPage = (int)ViewBag.MaxPage;
-	// var previousPage = page - 1;
-	var previousPage = page == 1 ? page : page - 1;
-	// var nextPage = page + 1;
-	var nextPage = page == maxPage ? maxPage : page + 1;
+	var previous = currentPage - 1;
+	var next = currentPage + 1;
 }
 
 <div class="row">
@@ -29,18 +28,19 @@
 								{
 									<tr>
 										<th scope="row">@tag.Position</th>
-										<td>@tag.tagName</td>
-										<td>@tag.tagDescription</td>
+										<td>@tag.TagName</td>
+										<td>@tag.TagDescription</td>
 										<td>
-											<a class="fs-4" href="~/Tag/Edit/?idTag=@tag.tagId">
+											<a class="fs-4 btn btn-outline-primary" href="~/Tag/Edit/?idTag=@tag.TagId">
 												<i class="fa-solid fa-file-pen"></i>
 											</a>
-											<button class="btn btn-outline-primary" type="button" onclick="deleteTag('@tag.tagId')">
+											<a class="fs-4 btn btn-outline-danger" onclick="deleteTag('@tag.TagId')">
 												<i class="fa-solid fa-eraser"></i>
-											</button>
+											</a>
 										</td>
 									</tr>
 								}
+
 							}
 							else
 							{
@@ -49,56 +49,35 @@
 								</tr>
 							}
 						</tbody>
+
 					</table>
+				</div>
+				<div class="row">
+					<div class="col-md-12 text-center m-2">
+						@if (previous == 0)
+						{
+							<button type="button" class="btn btn-success border-0 rounded-circle" disabled>&laquo;</button>
+						}
+						else
+						{
+							<button type="button" class="btn btn-outline-success border-0 rounded-circle" onclick="ReloadTagList(@previous)">&laquo;</button>
+						}
+						<button type="button" class="btn btn-outline-success border-0 rounded-circle">
+							@currentPage
+						</button>
+						@if (maxPage == currentPage)
+						{
+							<button type="button" class="btn btn-success border-0 rounded-circle" disabled>&raquo;</button>
+						}
+						else
+						{
+							<button type="button" class="btn btn-outline-success border-0 rounded-circle" onclick="ReloadTagList(@next)">&raquo;</button>
+						}
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
-<div class="row" style="margin-bottom: 20px;">
-@* 	<div class="col-md-12">
-		@if(previousPage == 0)
-		{
-			<span class="span_paging" style="background-color: gray">Previous</span>
-		} else
-		{
-			<span class="span_paging" onclick="getData(@previousPage)">Previous</span>
-		}
-		@{
-			var onclickEvent = nextPage == maxPage ? "style='background-color: gray'" : "onclick=getData(" + nextPage + ")";
-		}
-		<span class="span_paging" onclick="getData(@nextPage)">Next</span>
-		<span class="span_paging" @onclickEvent>Next</span>
-	</div> *@
-	<nav aria-label="Page navigation example">
-		<ul class="pagination justify-content-center pagination-lg">
-			@if (previousPage == 0)
-			{
-				<li class="page-item disabled">
-					<a class="page-link" href="#" aria-label="Previous">
-						<span aria-hidden="true">&laquo;</span>
-					</a>
-				</li>
-			}
-			else
-			{
-				<li class="page-item" onclick="getData(@previousPage)">
-					<a class="page-link" href="#" aria-label="Previous">
-						<span aria-hidden="true">&laquo;</span>
-					</a>
-				</li>
-			}
-@* 			<li class="page-item"><a class="page-link" href="#">1</a></li>
-			<li class="page-item"><a class="page-link" href="#">2</a></li>
-			<li class="page-item"><a class="page-link" href="#">3</a></li> *@
-@* 			@{
-				var onclickEvent = nextPage == maxPage ? "class='disabled page-item'" : "onclick=getData(" + nextPage + ")";
-			} *@
-			<li class="page-item" onclick="getData(@nextPage)">
-				<a class="page-link" href="#" aria-label="Next">
-					<span aria-hidden="true">&raquo;</span>
-				</a>
-			</li>
-		</ul>
-	</nav>
+
+   
 </div>

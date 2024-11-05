@@ -1,4 +1,11 @@
-﻿@model List<RaWMVC.Data.Entities.Genre>
+﻿@model List<RaWMVC.ViewModels.GenreViewModel>
+
+@{
+	var currentPage = (int)ViewBag.CurrentPage;
+	var maxPage = (int)ViewBag.MaxPage;
+	var previous = currentPage - 1;
+	var next = currentPage + 1;
+}
 
 <div class="row">
     <div class="col-12">
@@ -21,13 +28,13 @@
 								{
 									<tr>
 										<th scope="row">@genre.Position</th>
-										<td>@genre.genreName</td>
-										<td>@genre.genreDescription</td>
+										<td>@genre.GenreName</td>
+										<td>@genre.GenreDescription</td>
 										<td>
-											<a class="fs-4" href="~/Genre/Edit/?idGenre=@genre.genreId">
+											<a class="fs-4 btn btn-outline-primary" href="~/Genre/Edit/?idGenre=@genre.GenreId">
 												<i class="fa-solid fa-file-pen"></i>
 											</a>
-											<a class="fs-4" onclick="deleteGenre('@genre.genreId')">
+											<a class="fs-4 btn btn-outline-danger" onclick="deleteGenre('@genre.GenreId')">
 												<i class="fa-solid fa-eraser"></i>
 											</a>
 										</td>
@@ -43,6 +50,29 @@
                         </tbody>
                     </table>
                 </div>
+				<div class="row">
+					<div class="col-md-12 text-center m-2">
+						@if (previous == 0)
+						{
+							<button type="button" class="btn btn-success border-0 rounded-circle" disabled>&laquo;</button>
+						}
+						else
+						{
+							<button type="button" class="btn btn-outline-success border-0 rounded-circle" onclick="ReloadGenreList(@previous)">&laquo;</button>
+						}
+						<button type="button" class="btn btn-outline-success border-0 rounded-circle">
+							@currentPage
+						</button>
+						@if (maxPage == currentPage)
+						{
+							<button type="button" class="btn btn-success border-0 rounded-circle" disabled>&raquo;</button>
+						}
+						else
+						{
+							<button type="button" class="btn btn-outline-success border-0 rounded-circle" onclick="ReloadGenreList(@next)">&raquo;</button>
+						}
+					</div>
+				</div>
             </div>
         </div>
     </div>

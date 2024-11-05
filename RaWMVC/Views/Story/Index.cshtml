@@ -1,0 +1,170 @@
+﻿@model List<RaWMVC.Data.Entities.Story>
+
+@{
+    ViewData["Title"] = "My Story";
+    // Layout = "~/View/Shared/_Layout.cshtml";
+}
+
+<main class="main_content">
+    <div class="top_page d-flex justify-content-between">
+        <h3 class="fw-bold">My Stories</h3>
+        <div class="text-success text-uppercase fs-3">@TempData["MessageSuccess"] </div>
+        <!-- Button trigger modal -->
+        <button type="button"
+                class="btn_create_story text-white"
+                data-bs-toggle="modal"
+                data-bs-target="#exampleModal"
+                onclick="modalShowCreateStory()">
+            Create a new story <i class="fa-solid fa-circle-plus ms-2"></i>
+        </button>
+    </div>
+    <div class="main_content_dashboard mt-3 p-2" id="story-list">
+        @await Component.InvokeAsync("StoryList")
+    </div>
+</main>
+@section Scripts {
+    <script>
+        //=== Create Story ===//
+        function modalShowCreateStory(pointer) {
+            $.ajax({
+                type: "GET",
+                url: "/Story/Create",
+                success: function (data) {
+                    openModal(data, modalSize.large)
+                },
+                error: function (err) {
+
+                },
+                complete: function () { }
+            });
+        }
+        function createStory() {
+            let formData = new FormData();
+
+            formData.append("StoryTitle", document.getElementById("titleStory").value);
+            formData.append("StoryDescription", document.getElementById("descriptionStory").value);
+            formData.append("GenreId", document.getElementById("categorySelect").value);
+            formData.append("TagId", document.getElementById("tagSelect").value);
+            formData.append("StatusId", document.getElementById("statusSelect").value);
+            formData.append("CoverImage", document.getElementById("file").files[0]);
+
+            $.ajax({
+                type: "POST",
+                url: "/Story/Create",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (data.success) {
+                        // Tắt modal
+                        $('#modalStory').modal('hide');
+                        // Tải lại danh sách story (bạn có thể cập nhật danh sách mà không cần tải lại trang)
+                        window.location.reload();
+                    } else {
+                        // Hiển thị thông báo lỗi
+                        document.getElementById("errorMessage").innerText = data.message;
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            });
+        }
+        //=== Delete Story ===//
+        function deleteStory(idStory) {
+            $.ajax({
+                type: 'POST',
+                url: "/Story/Delete",
+                data: {
+                    idStory
+                },
+                success: function (data) {
+                    alert("Delete successfully!!!");
+                    ReloadStoryList();
+                },
+                error: function (err) {
+
+                },
+                complete: function (e) {
+
+                },
+            });
+        }
+        function ReloadStoryList() {
+            $.ajax({
+                type: 'GET',
+                url: "/Story/ReloadStoryList",
+                success: function (data) {
+                    let divStoryList = document.getElementById("story-list");
+
+                    if (divStoryList) {
+                        divStoryList.innerHTML = data;
+                    }
+                },
+                error: function (err) {
+
+                },
+                complete: function (e) {
+
+                },
+            });
+        }
+        //=== Open modal Edit ===//
+        function modalShowEditStory(idStory) {
+            console.log(idStory);
+
+            $.ajax({
+                type: "GET",
+                url: "/Story/Edit",
+                data: {
+                    idStory,
+                },
+                success: function (data) {
+                    openModal(data);
+                },
+                error: function (err) {
+
+                },
+                complete: function () { }
+            });
+        }
+        function editStory(idStory) {
+            let formData = new FormData(document.getElementById("editStoryForm"));
+
+            $.ajax({
+                type: "POST",
+                url: "/Story/Edit",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (data.success) {
+                        closeModal();
+                        updateStoryList();
+                    } else {
+                        showErrorMessage(data.message);
+                    }
+                },
+                error: function (err) {
+                    console.error(err);
+                }
+            });
+        }
+        function updateStoryList() {
+            $.ajax({
+                type: "GET",
+                url: "/Story/Index",
+                success: function (data) {
+                    $("#story-list").html(data);
+                },
+                error: function (err) {
+                    console.error(err);
+                }
+            });
+        }
+        function showErrorMessage(message) {
+            document.getElementById("errorMessage").innerHTML = message;
+        }
+
+    </script>
+}

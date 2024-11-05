@@ -1,0 +1,78 @@
+﻿@model RaWMVC.ViewModels.StoryViewModel
+
+@{
+    ViewData["Title"] = "List Chapter";
+    // Layout = "~/View/Shared/_Layout.cshtml";
+}
+
+<main class="main_content">
+    <div class="subnavigate d-flex rounded w-100" style="height: 60px">
+        <div class="chapter_number d-flex justify-content-between w-100">
+            <div class="btn-group">
+                <a class="btn_chapter ms-3 mt-3 text-dark text-decoration-none"
+                   href="~/Story/Index">
+                    <i class="fa-solid fa-chevron-left"></i>
+                    <span class="fw-bold fs-4">@Model.StoryTitle</span>
+                </a>
+            </div>
+            <div class="save_cancel mt-2 me-3">
+                <a class="btn_create_story text-white" href="~/Chapter/Create?idStory=@Model.StoryId">
+                    New Part <i class="fa-solid fa-circle-plus ms-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="top_page m-4">
+        <h3 class="fw-bold">List Chapters</h3>
+    </div>
+    <div class="main_content_dashboard mt-3 p-2" id="chapter-list">
+        @await Component.InvokeAsync("ChapterList", new { idStory = Model.StoryId })
+    </div>
+</main>
+@section Scripts {
+    <script>
+        //=== Delete Story ===//
+        function deleteChapter(idChapter) {
+            $.ajax({
+                type: 'POST',
+                url: "/Chapter/Delete",
+                data: {
+                    idChapter
+                },
+                success: function (data) {
+                    ReloadChapterList();
+                },
+                error: function (err) {
+
+                },
+                complete: function (e) {
+
+                },
+            });
+        }
+        function ReloadChapterList() {
+            var idStory = '@Model.StoryId';
+
+            $.ajax({
+                type: 'GET',
+                url: "/Chapter/ReloadChapterList",
+                data: {
+                    idStory
+                },
+                success: function (data) {
+                    let divChapterList = document.getElementById("chapter-list");
+
+                    if (divChapterList) {
+                        divChapterList.innerHTML = data;
+                    }
+                },
+                error: function (err) {
+
+                },
+                complete: function (e) {
+
+                },
+            });
+        }
+    </script>
+}

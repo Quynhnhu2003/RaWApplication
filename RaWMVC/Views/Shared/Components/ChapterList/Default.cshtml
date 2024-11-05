@@ -1,0 +1,61 @@
+﻿@model RaWMVC.ViewModels.StoryViewModel
+
+
+@if (Model != null)
+{
+    @foreach (var chapter in Model.Chapters)
+    {
+        <div class="container text-dark shadow-lg p-3 mb-5 bg-body-tertiary rounded w-75 story_author_container">
+            <div class="row">
+                <div class="col-6 lh-lg ps-4">
+                    <a href="#" class="text-decoration-none text-dark">
+                        <h3 class="title mb-4 fw-bold">@chapter.ChapterTitle</h3>
+                        <div class="story_info_details d-flex">
+                            <div class="d-flex">
+                                <p class="bg-warning rounded-pill"
+                                    style="width: 80px; padding: 0 6px">
+                                    spending
+                                </p>
+                                <div class="line-5"></div>
+                                <span class="fst-italic">@chapter.PublishDate.ToString("MM - dd - yyyy")</span>
+                            </div>
+                            <div class="profile_infor d-flex ms-5">
+                                <div class="reader me-2">
+                                    <i class="fa-solid fa-book-open-reader"></i> 123K
+                                </div>
+                                <div class="rate me-2">
+                                    <i class="fa-solid fa-star"></i> 100K
+                                </div>
+                                @* <div class="chapter">
+                                    <i class="fa-solid fa-list-ol"></i> 23
+                                </div> *@
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-6 text-center btn_group_custom mt-3 align-middle">
+                    <a type="button"
+                            class="btn btn-outline-secondary"
+                            title="View as reader">
+                        <i class="fa-solid fa-book-open-reader"></i>
+                    </a>
+                    <button type="button"
+                            class="btn btn-outline-danger"
+                            title="Delete part"
+                            onclick="deleteChapter('@chapter.ChapterId')">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                    <a class="btn btn-outline-success"
+                            href="~/Chapter/Edit/?idChapter=@chapter.ChapterId"
+                            title="Edit part">
+                        <i class="fa-solid fa-file-pen"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <h3>This story has no chapters yet!!!</h3>
+}
